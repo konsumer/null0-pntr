@@ -2,32 +2,33 @@
 
 #pragma once
 
-#include <sys/stat.h>
-#include <unistd.h>
 #include <libgen.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "physfs.h"
 
 // these are the supported filetypes we can detect
 // see fs_parse_magic_bytes()
 typedef enum {
-    FILE_TYPE_UNKNOWN,
-    FILE_TYPE_ZIP,
-    FILE_TYPE_WASM,
-    FILE_TYPE_PNG,
-    FILE_TYPE_JPEG,
-    FILE_TYPE_BMP,
-    FILE_TYPE_GIF,
-    FILE_TYPE_WAV,
-    FILE_TYPE_OGG,
-    FILE_TYPE_MP3,
-    FILE_TYPE_TTF,
-    FILE_TYPE_OTF,
-    FILE_TYPE_DIR
+  FILE_TYPE_UNKNOWN,
+  FILE_TYPE_ZIP,
+  FILE_TYPE_WASM,
+  FILE_TYPE_PNG,
+  FILE_TYPE_JPEG,
+  FILE_TYPE_BMP,
+  FILE_TYPE_GIF,
+  FILE_TYPE_WAV,
+  FILE_TYPE_OGG,
+  FILE_TYPE_MP3,
+  FILE_TYPE_TTF,
+  FILE_TYPE_OTF,
+  FILE_TYPE_DIR
 } DetectFileType;
 
 // call this to initialize filesystem
@@ -37,7 +38,7 @@ bool fs_init(char* cartName);
 void fs_unload();
 
 // load a file from native filesystem
-unsigned char* fs_load_file_real(char *filename, unsigned int *bytesRead);
+unsigned char* fs_load_file_real(char* filename, unsigned int* bytesRead);
 
 // load a file from physfs filesystem
 unsigned char* fs_load_file(char* filename, uint32_t* bytesRead);
@@ -86,25 +87,24 @@ bool fs_init(char* cartFilename) {
 
   const char* null0_writable_dir = PHYSFS_getPrefDir("null0", cartName);
 
-  // build what is put into null0_writable_dir, so it can be mounted
-  #ifdef EMSCRIPTEN
-    if (mkdir("/home", 0) == -1) {
-      // printf("could not make /home\n");
-    }
-    if (mkdir("/home/web_user", 0) == -1) {
-      // printf("could not make /home/web_user\n");
-    }
-    if (mkdir("/home/web_user/.local", 0) == -1) {
-      // printf("could not make /home/web_user/.local\n");
-    }
-    if (mkdir("/home/web_user/.local/share", 0) == -1) {
-      // printf("could not make /home/web_user/.local/share\n");
-    }
-    if (mkdir(null0_writable_dir, 0) == -1) {
-      // printf("could not make %s\n", null0_writable_dir);
-    }
-  #endif
-
+// build what is put into null0_writable_dir, so it can be mounted
+#ifdef EMSCRIPTEN
+  if (mkdir("/home", 0) == -1) {
+    // printf("could not make /home\n");
+  }
+  if (mkdir("/home/web_user", 0) == -1) {
+    // printf("could not make /home/web_user\n");
+  }
+  if (mkdir("/home/web_user/.local", 0) == -1) {
+    // printf("could not make /home/web_user/.local\n");
+  }
+  if (mkdir("/home/web_user/.local/share", 0) == -1) {
+    // printf("could not make /home/web_user/.local/share\n");
+  }
+  if (mkdir(null0_writable_dir, 0) == -1) {
+    // printf("could not make %s\n", null0_writable_dir);
+  }
+#endif
 
   if (null0_writable_dir == NULL) {
     return false;
@@ -112,7 +112,7 @@ bool fs_init(char* cartFilename) {
 
   DetectFileType cartType = fs_detect_type_real(cartFilename);
 
-  switch(cartType) {
+  switch (cartType) {
     case FILE_TYPE_DIR:
     case FILE_TYPE_ZIP: {
       if (!PHYSFS_mount(cartFilename, NULL, 1)) {
@@ -128,7 +128,8 @@ bool fs_init(char* cartFilename) {
       }
       break;
     }
-    default: return false;
+    default:
+      return false;
   }
 
   if (!PHYSFS_mount(null0_writable_dir, NULL, 1)) {
@@ -145,12 +146,10 @@ bool fs_init(char* cartFilename) {
 }
 
 // called to unload filesystem
-void fs_unload() {
-  PHYSFS_deinit();
-}
+void fs_unload() { PHYSFS_deinit(); }
 
 // load a file from native filesystem
-unsigned char* fs_load_file_real(char *filename, unsigned int *bytesRead) {
+unsigned char* fs_load_file_real(char* filename, unsigned int* bytesRead) {
   FILE* file = fopen(filename, "rb");
   if (file == NULL) {
     *bytesRead = 0;
@@ -175,7 +174,8 @@ unsigned char* fs_load_file_real(char *filename, unsigned int *bytesRead) {
   }
 
   // Read the file
-  unsigned int bytes = (unsigned int)fread(data, sizeof(unsigned char), size, file);
+  unsigned int bytes =
+      (unsigned int)fread(data, sizeof(unsigned char), size, file);
   fclose(file);
   *bytesRead = bytes;
 
@@ -199,7 +199,7 @@ bool fs_save_file_real(char* filename, unsigned char* data, uint32_t byteSize) {
   if (filename == NULL || data == NULL) {
     return false;
   }
-  FILE *file = fopen(filename, "wb");
+  FILE* file = fopen(filename, "wb");
   if (file == NULL) {
     return false;
   }
@@ -234,38 +234,38 @@ bool fs_save_file(char* filename, unsigned char* data, uint32_t byteSize) {
 DetectFileType fs_parse_magic_bytes(uint32_t magic_number) {
   switch (magic_number) {
     case 0x4034b50:  // ZIP
-        return FILE_TYPE_ZIP;
+      return FILE_TYPE_ZIP;
 
     case 0x6d736100:  // WASM
-        return FILE_TYPE_WASM;
+      return FILE_TYPE_WASM;
 
     case 0x89504E47:  // PNG
-        return FILE_TYPE_PNG;
+      return FILE_TYPE_PNG;
 
     // JPEG variants
     case 0xe0ffd8ff:  // JPEG/JFIF
     case 0xe1ffd8ff:  // JPEG/Exif
     case 0xeeffd8ff:  // JPEG/SPIFF
     case 0xfeffd8ff:  // JPEG/COM
-        return FILE_TYPE_JPEG;
+      return FILE_TYPE_JPEG;
 
     case 0x46464952:  // WAV ("RIFF")
-        return FILE_TYPE_WAV;
+      return FILE_TYPE_WAV;
 
     case 0x5367674f:  // OGG ("OggS")
-        return FILE_TYPE_OGG;
+      return FILE_TYPE_OGG;
 
     // MP3 variants
     case 0x03334449:  // MP3 with ID3v2.3
     case 0x02334449:  // MP3s with ID3v2.2
     case 0x04334449:  // MP3 with ID3v2.4
-        return FILE_TYPE_MP3;
+      return FILE_TYPE_MP3;
 
-    case 0x00010000: // TTF font
-        return FILE_TYPE_TTF;
+    case 0x00010000:  // TTF font
+      return FILE_TYPE_TTF;
 
-    case 0x4F54544F: // OTF font
-        return FILE_TYPE_OTF;
+    case 0x4F54544F:  // OTF font
+      return FILE_TYPE_OTF;
 
     case 0x47494638:
       return FILE_TYPE_GIF;
@@ -285,7 +285,7 @@ DetectFileType fs_parse_magic_bytes(uint32_t magic_number) {
 DetectFileType fs_detect_type_real(char* filename) {
   struct stat sb;
 
-  if (stat(filename, &sb) != 0){
+  if (stat(filename, &sb) != 0) {
     return FILE_TYPE_UNKNOWN;
   }
   if (S_ISDIR(sb.st_mode)) {
@@ -310,7 +310,8 @@ DetectFileType fs_detect_type(char* filename) {
     return FILE_TYPE_UNKNOWN;
   }
   uint32_t magic_number = 0;
-  PHYSFS_sint64 br = PHYSFS_readBytes(f, (unsigned char*)&magic_number, sizeof(uint32_t));
+  PHYSFS_sint64 br =
+      PHYSFS_readBytes(f, (unsigned char*)&magic_number, sizeof(uint32_t));
   if (br != sizeof(uint32_t)) {
     return FILE_TYPE_UNKNOWN;
   }
@@ -318,25 +319,24 @@ DetectFileType fs_detect_type(char* filename) {
   return fs_parse_magic_bytes(magic_number);
 }
 
-
 char* fs_get_cart_name(char* filename) {
-    // Allocate memory that will persist after function returns
-    char* sname = strdup(filename);  // Make a copy of filename
-    if (!sname) return NULL;
+  // Allocate memory that will persist after function returns
+  char* sname = strdup(filename);  // Make a copy of filename
+  if (!sname) return NULL;
 
-    char* bname = basename(sname);
-    char* cartName = strtok(bname, ".");
+  char* bname = basename(sname);
+  char* cartName = strtok(bname, ".");
 
-    if (!cartName || strlen(cartName) > 127) {
-        free(sname);
-        return NULL;
-    }
-
-    // Make a copy of cartName before freeing sname
-    char* result = strdup(cartName);
+  if (!cartName || strlen(cartName) > 127) {
     free(sname);
+    return NULL;
+  }
 
-    return result;
+  // Make a copy of cartName before freeing sname
+  char* result = strdup(cartName);
+  free(sname);
+
+  return result;
 }
 
 // Get info about a file from native filesystem
@@ -346,4 +346,4 @@ PHYSFS_Stat fs_file_info(char* filename) {
   return stat;
 }
 
-#endif // FS_IMPLEMENTATION
+#endif  // FS_IMPLEMENTATION
