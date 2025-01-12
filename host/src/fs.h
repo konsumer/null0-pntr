@@ -20,9 +20,13 @@ typedef enum {
     FILE_TYPE_WASM,
     FILE_TYPE_PNG,
     FILE_TYPE_JPEG,
+    FILE_TYPE_BMP,
+    FILE_TYPE_GIF,
     FILE_TYPE_WAV,
     FILE_TYPE_OGG,
     FILE_TYPE_MP3,
+    FILE_TYPE_TTF,
+    FILE_TYPE_OTF,
     FILE_TYPE_DIR
 } DetectFileType;
 
@@ -257,9 +261,24 @@ DetectFileType fs_parse_magic_bytes(uint32_t magic_number) {
     case 0x04334449:  // MP3 with ID3v2.4
         return FILE_TYPE_MP3;
 
-    default:
-        return FILE_TYPE_UNKNOWN;
+    case 0x00010000: // TTF font
+        return FILE_TYPE_TTF;
+
+    case 0x4F54544F: // OTF font
+        return FILE_TYPE_OTF;
+
+    case 0x47494638:
+      return FILE_TYPE_GIF;
   }
+
+  // if bytes are not 4-length signatures, check other things
+  unsigned char b[4] = {};
+  memcpy(&b, &magic_number, 4);
+  if (b[0] == 0x42 && b[1] == 0x4D) {
+    return FILE_TYPE_BMP;
+  }
+
+  return FILE_TYPE_UNKNOWN;
 }
 
 // detect file-type from native filesystem file
