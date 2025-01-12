@@ -66,10 +66,7 @@ bool Init(pntr_app* app) {
 bool Update(pntr_app* app, pntr_image* screen) {
     AppData* appData = (AppData*)pntr_app_userdata(app);
     float deltaTime = pntr_app_delta_time(app);
-
-    (void)appData;
-    (void)deltaTime;
-
+    null0_host_update(appData, deltaTime);
     return true;
 }
 
@@ -79,7 +76,8 @@ void Close(pntr_app* app) {
 }
 
 void Event(pntr_app* app, pntr_app_event* event) {
-
+    AppData* appData = (AppData*)pntr_app_userdata(app);
+    null0_host_event(appData, event);
 }
 
 pntr_app Main(int argc, char* argv[]) {

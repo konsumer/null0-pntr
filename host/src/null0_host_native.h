@@ -70,8 +70,21 @@ bool null0_host_init(AppData* appData, unsigned char *wasmBytes, unsigned int wa
   return true;
 }
 
+// called on every frame to update screen
+void null0_host_update(AppData* appData, float deltaTime) {
+  // call appData->cart_update
+}
+
+
+void null0_host_event(AppData* appData, pntr_app_event* event){
+  // call appData->cart_buttonUp/buttonDown/keyUp/keyDown
+}
+
+
 // Cleanup function (you'll want this too)
 void null0_host_cleanup(AppData* appData) {
+  // call appData->cart_unload
+
   if (appData->exec_env) {
     wasm_runtime_destroy_exec_env(appData->exec_env);
     appData->exec_env = NULL;

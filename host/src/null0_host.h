@@ -45,6 +45,9 @@ bool null0_host_init(AppData* appData, unsigned char *wasmBytes, unsigned int wa
 // cleanup wasm
 void null0_host_cleanup(AppData* appData);
 
+// called on every frame to update screen
+void null_host_update(AppData* appData, float deltaTime);
+
 #ifdef EMSCRIPTEN
     #include "null0_host_web.h"
 #else
