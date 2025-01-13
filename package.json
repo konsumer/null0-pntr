@@ -13,7 +13,7 @@
     "prebuild:native": "npm run config:native",
     "prebuild:carts": "npm run config:native",
     "prebuild:web": "npm run config:web",
-    "gen:host": "node tools/gen_host.mjs",
+    "gen:host": "node tools/gen_host.mjs  > host/src/null0_host_api.h",
     "gen:c": "node tools/gen_cart_c.mjs",
     "clean": "rm -rf build wbuild"
   },

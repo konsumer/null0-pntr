@@ -24,12 +24,12 @@ const mapReturnToC = {
   bytes: 'uint32_t',
   FileInfo: 'uint32_t',
   'string[]': 'uint32_t',
-  string: 'char*',
+  string: 'uint32_t',
   Color: 'uint32_t'
 }
 
 const mapArgToC = {
-  string: 'char*',
+  string: 'uint32_t',
   i32: 'int32_t',
   Sound: 'uint32_t',
   bool: 'bool',
@@ -49,19 +49,62 @@ const mapArgToC = {
   u32: 'uint32_t'
 }
 
+// eventually this will be a bit smarter about adding function-call body
+// but for now I cover some easy cases
+function getCall(funcName, func) {
+  if (funcName === 'trace') {
+    return [`  printf("%s\\n", str);`]
+  }
+  if (funcName.startsWith('draw_')) {
+    const args = [`appData->app->screen`, ...Object.keys(func.args)]
+    if (funcName.endsWith('_outline')) {
+      return [`  pntr_${funcName.replace(/_outline$/, '_thick')}(${args.join(', ')});`]
+    } else if (funcName.endsWith('_outline_on_image')) {
+      args.shift()
+      return [`  pntr_${funcName.replace(/_outline_on_image/, '_thick')}(${args.join(', ')});`]
+    } else {
+      return [`  pntr_${funcName}_fill(${args.join(', ')});`]
+    }
+  }
+  return ['  // TODO', `  pntr_app_log(PNTR_APP_LOG_DEBUG, "called ${funcName}");`]
+}
+
 for (const filename of await glob('api/**/*.yml')) {
   const api = YAML.parse(await readFile(filename, 'utf8'))
   const apiName = basename(filename, '.yml')
   out.push('', `// ${apiName.toUpperCase()}`, '')
   for (const [funcName, func] of Object.entries(api)) {
     out.push(`// ${func.description}`)
+    const argPullers = []
     out.push(
       `HOST_FUNCTION(${mapReturnToC[func.returns]}, ${funcName}, (${Object.entries(func.args)
-        .map((a) => `${mapArgToC[a[1]]} ${a[0]}`)
+        .map((a) => {
+          if (a[1] === 'Color') {
+            argPullers.push(`  pntr_color ${a[0]} = cart_color(${a[0]}Ptr);`)
+            return `uint32_t ${a[0]}Ptr`
+          }
+          if (a[1] === 'string') {
+            argPullers.push(`  char* ${a[0]} = copy_from_cart_string(${a[0]}Ptr);`)
+            return `uint32_t ${a[0]}Ptr`
+          }
+          if (a[1] === 'Image') {
+            argPullers.push(`  pntr_image* ${a[0]} = appData->images[${a[0]}Ptr];`)
+            return `uint32_t ${a[0]}Ptr`
+          }
+          if (a[1] === 'Font') {
+            argPullers.push(`  pntr_font* ${a[0]} = appData->fonts[${a[0]}Ptr];`)
+            return `uint32_t ${a[0]}Ptr`
+          }
+          if (a[1] === 'Sound') {
+            argPullers.push(`  pntr_sound* ${a[0]} = appData->sounds[${a[0]}Ptr];`)
+            return `uint32_t ${a[0]}Ptr`
+          }
+          return `${mapArgToC[a[1]]} ${a[0]}`
+        })
         .join(', ')}), {`
     )
-    out.push('  // TODO')
-    out.push(`  pntr_app_log(PNTR_APP_LOG_DEBUG, "called ${funcName}");`)
+    out.push(...argPullers)
+    out.push(...getCall(funcName, func))
     out.push('})')
     out.push('')
   }

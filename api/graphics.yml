@@ -580,6 +580,7 @@ draw_rectangle_outline:
     posY: i32
     width: i32
     height: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined rectangle on the screen
@@ -592,6 +593,7 @@ draw_triangle_outline:
     y2: i32
     x3: i32
     y3: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined triangle on the screen
@@ -602,6 +604,7 @@ draw_ellipse_outline:
     centerY: i32
     radiusX: i32
     radiusY: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined ellipse on the screen
@@ -611,6 +614,7 @@ draw_circle_outline:
     centerX: i32
     centerY: i32
     radius: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined circle on the screen
@@ -619,6 +623,7 @@ draw_polygon_outline:
   args:
     points: Vector[]
     numPoints: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined polygon on the screen
@@ -631,6 +636,7 @@ draw_arc_outline:
     startAngle: f32
     endAngle: f32
     segments: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined arc on the screen
@@ -642,6 +648,7 @@ draw_rectangle_rounded_outline:
     width: i32
     height: i32
     cornerRadius: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined round-rectangle on the screen
@@ -653,6 +660,7 @@ draw_rectangle_outline_on_image:
     posY: i32
     width: i32
     height: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined rectangle on an image
@@ -666,6 +674,7 @@ draw_triangle_outline_on_image:
     y2: i32
     x3: i32
     y3: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined triangle on an image
@@ -677,6 +686,7 @@ draw_ellipse_outline_on_image:
     centerY: i32
     radiusX: i32
     radiusY: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined ellipse on an image
@@ -687,6 +697,7 @@ draw_circle_outline_on_image:
     centerX: i32
     centerY: i32
     radius: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined circle on an image
@@ -696,6 +707,7 @@ draw_polygon_outline_on_image:
     destination: Image
     points: Vector[]
     numPoints: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined polygon on an image
@@ -708,6 +720,7 @@ draw_rectangle_rounded_outline_on_image:
     width: i32
     height: i32
     cornerRadius: i32
+    thickness: i32
     color: Color
   returns: void
   description: Draw a 1px outlined round-rectangle on an image
