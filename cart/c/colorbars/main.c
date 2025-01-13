@@ -1,4 +1,5 @@
 #include <null0.h>
+#include <math.h>
 
 Color colors[26];
 
@@ -36,14 +37,18 @@ int main() {
   return 0;
 }
 
+float currentTime = 0.0f;
+
 void update(float deltaTime) {
-  clear(BLACK);
+  currentTime += deltaTime;
+  int i = round(currentTime);
+  clear(colors[i % 26]);
 
   int x;
   int c = 0;
-  for (x = 10; x < (28 * 10); x += 10) {
-    draw_rectangle(x + 13, 5, 8, 5, WHITE);
-    draw_rectangle(x + 15, 15, 5, 210, colors[c++]);
-    draw_rectangle(x + 13, 230, 8, 5, WHITE);
+  for (x = 20; x < (27 * 20); x += 20) {
+    draw_rectangle(x + 26, 10, 16, 10, WHITE);
+    draw_rectangle(x + 30, 30, 10, 420, colors[c++]);
+    draw_rectangle(x + 26, 460, 16, 10, WHITE);
   }
 }
