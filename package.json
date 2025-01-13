@@ -1,0 +1,27 @@
+{
+  "name": "null0",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "npm run build:native && npm run build:carts && npm run build:web",
+    "config:native": "cmake -B build -G Ninja",
+    "build:native": "cmake --build build --target null0",
+    "build:carts": "cmake --build build --target carts",
+    "config:web": "emcmake cmake -B wbuild -G Ninja",
+    "build:web": "cmake --build wbuild --target null0",
+    "prebuild:native": "npm run config:native",
+    "prebuild:carts": "npm run config:native",
+    "prebuild:web": "npm run config:web",
+    "gen:host": "node tools/gen_host.mjs",
+    "gen:c": "node tools/gen_cart_c.mjs",
+    "clean": "rm -rf build wbuild"
+  },
+  "keywords": [],
+  "author": "David Konsumer <konsumer@jetboystudio.com>",
+  "license": "ZLIB",
+  "devDependencies": {
+    "glob": "^11.0.1",
+    "yaml": "^2.7.0"
+  }
+}
