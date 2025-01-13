@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "npm run build:native && npm run build:carts && npm run build:web",
-    "config:native": "cmake -B build -G Ninja",
+    "config:native": "cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug",
     "build:native": "cmake --build build --target null0",
     "build:carts": "cmake --build build --target carts",
     "config:web": "emcmake cmake -B wbuild -G Ninja",

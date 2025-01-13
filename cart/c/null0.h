@@ -306,8 +306,8 @@ typedef struct FileInfo {
   bool readonly;     /**< non-zero if read only, zero if writable. */
 } FileInfo;
 
-#define WIDTH 320
-#define HEIGHT 240
+#define WIDTH 640
+#define HEIGHT 480
 
 Color LIGHTGRAY = (Color){.r = 200, .g = 200, .b = 200, .a = 255};
 Color GRAY = (Color){.r = 130, .g = 130, .b = 130, .a = 255};
@@ -723,55 +723,55 @@ void draw_text_on_image(u32 destination, u32 font, char *text, i32 posX, i32 pos
 
 // Draw a 1px outlined rectangle on the screen
 NULL0_IMPORT("draw_rectangle_outline")
-void draw_rectangle_outline(i32 posX, i32 posY, i32 width, i32 height, Color color);
+void draw_rectangle_outline(i32 posX, i32 posY, i32 width, i32 height, i32 thickness, Color color);
 
 // Draw a 1px outlined triangle on the screen
 NULL0_IMPORT("draw_triangle_outline")
-void draw_triangle_outline(i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, Color color);
+void draw_triangle_outline(i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, i32 thickness, Color color);
 
 // Draw a 1px outlined ellipse on the screen
 NULL0_IMPORT("draw_ellipse_outline")
-void draw_ellipse_outline(i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, Color color);
+void draw_ellipse_outline(i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, i32 thickness, Color color);
 
 // Draw a 1px outlined circle on the screen
 NULL0_IMPORT("draw_circle_outline")
-void draw_circle_outline(i32 centerX, i32 centerY, i32 radius, Color color);
+void draw_circle_outline(i32 centerX, i32 centerY, i32 radius, i32 thickness, Color color);
 
 // Draw a 1px outlined polygon on the screen
 NULL0_IMPORT("draw_polygon_outline")
-void draw_polygon_outline(Vector *points, i32 numPoints, Color color);
+void draw_polygon_outline(Vector *points, i32 numPoints, i32 thickness, Color color);
 
 // Draw a 1px outlined arc on the screen
 NULL0_IMPORT("draw_arc_outline")
-void draw_arc_outline(i32 centerX, i32 centerY, f32 radius, f32 startAngle, f32 endAngle, i32 segments, Color color);
+void draw_arc_outline(i32 centerX, i32 centerY, f32 radius, f32 startAngle, f32 endAngle, i32 segments, i32 thickness, Color color);
 
 // Draw a 1px outlined round-rectangle on the screen
 NULL0_IMPORT("draw_rectangle_rounded_outline")
-void draw_rectangle_rounded_outline(i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, Color color);
+void draw_rectangle_rounded_outline(i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, i32 thickness, Color color);
 
 // Draw a 1px outlined rectangle on an image
 NULL0_IMPORT("draw_rectangle_outline_on_image")
-void draw_rectangle_outline_on_image(u32 destination, i32 posX, i32 posY, i32 width, i32 height, Color color);
+void draw_rectangle_outline_on_image(u32 destination, i32 posX, i32 posY, i32 width, i32 height, i32 thickness, Color color);
 
 // Draw a 1px outlined triangle on an image
 NULL0_IMPORT("draw_triangle_outline_on_image")
-void draw_triangle_outline_on_image(u32 destination, i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, Color color);
+void draw_triangle_outline_on_image(u32 destination, i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, i32 thickness, Color color);
 
 // Draw a 1px outlined ellipse on an image
 NULL0_IMPORT("draw_ellipse_outline_on_image")
-void draw_ellipse_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, Color color);
+void draw_ellipse_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, i32 thickness, Color color);
 
 // Draw a 1px outlined circle on an image
 NULL0_IMPORT("draw_circle_outline_on_image")
-void draw_circle_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius, Color color);
+void draw_circle_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius, i32 thickness, Color color);
 
 // Draw a 1px outlined polygon on an image
 NULL0_IMPORT("draw_polygon_outline_on_image")
-void draw_polygon_outline_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
+void draw_polygon_outline_on_image(u32 destination, Vector *points, i32 numPoints, i32 thickness, Color color);
 
 // Draw a 1px outlined round-rectangle on an image
 NULL0_IMPORT("draw_rectangle_rounded_outline_on_image")
-void draw_rectangle_rounded_outline_on_image(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, Color color);
+void draw_rectangle_rounded_outline_on_image(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, i32 thickness, Color color);
 
 /////////// FILESYSTEM ///////////
 

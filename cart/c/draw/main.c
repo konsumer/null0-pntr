@@ -7,18 +7,18 @@ int main() {
 
 void update(float deltaTime) {
   clear(BLACK);
-  draw_ellipse(100, 100, 100, 50, WHITE);
+  draw_ellipse(200, 200, 200, 100, WHITE);
 
-  draw_triangle(200, 200, 100, 100, 150, 0, GREEN);
+  draw_triangle(400, 400, 200, 200, 300, 0, GREEN);
 
-  draw_circle(100, 100, 30, RED);
-  draw_rectangle(150, 150, 30, 30, RED);
-  draw_rectangle_outline(145, 145, 40, 40, RED);
+  draw_circle(200, 200, 60, RED);
+  draw_rectangle(300, 300, 60, 60, RED);
+  draw_rectangle_outline(290, 290, 80, 80, 1, RED);
 
-  draw_circle_outline(100, 100, 35, BLUE);
-  draw_circle_outline(100, 100, 40, PURPLE);
-  draw_circle_outline(100, 100, 45, GREEN);
+  draw_circle_outline(200, 200, 70, 1, BLUE);
+  draw_circle_outline(200, 200, 80, 2, PURPLE);
+  draw_circle_outline(200, 200, 90, 3, GREEN);
 
-  draw_point(100, 100, WHITE);
-  draw_line(0, 0, 320, 240, YELLOW);
+  draw_point(200, 200, WHITE);
+  draw_line(0, 0, 640, 480, YELLOW);
 }

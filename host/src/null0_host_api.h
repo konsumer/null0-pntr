@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-13T03:07:09.544Z
+// it was generated on 2025-01-13T08:02:57.691Z
 
 #pragma once
 
@@ -182,20 +182,19 @@ HOST_FUNCTION(uint32_t, image_subimage, (uint32_t imagePtr, int32_t x, int32_t y
 // Clear the screen
 HOST_FUNCTION(void, clear, (uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called clear");
+  pntr_clear_background(appData->app->screen, color);
 })
 
 // Draw a single pixel on the screen
 HOST_FUNCTION(void, draw_point, (int32_t x, int32_t y, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_point_fill(appData->app->screen, x, y, color);
+  pntr_draw_point(appData->app->screen, x, y, color);
 })
 
 // Draw a line on the screen
 HOST_FUNCTION(void, draw_line, (int32_t startPosX, int32_t startPosY, int32_t endPosX, int32_t endPosY, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_line_fill(appData->app->screen, startPosX, startPosY, endPosX, endPosY, color);
+  pntr_draw_line(appData->app->screen, startPosX, startPosY, endPosX, endPosY, color);
 })
 
 // Draw a filled rectangle on the screen
@@ -231,7 +230,7 @@ HOST_FUNCTION(void, draw_polygon, (uint32_t points, int32_t numPoints, uint32_t 
 // Draw several lines on the screen
 HOST_FUNCTION(void, draw_polyline, (uint32_t points, int32_t numPoints, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_polyline_fill(appData->app->screen, points, numPoints, color);
+  pntr_draw_polyline(appData->app->screen, points, numPoints, color);
 })
 
 // Draw a filled arc on the screen
@@ -249,32 +248,32 @@ HOST_FUNCTION(void, draw_rectangle_rounded, (int32_t x, int32_t y, int32_t width
 // Draw an image on the screen
 HOST_FUNCTION(void, draw_image, (uint32_t srcPtr, int32_t posX, int32_t posY), {
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_fill(appData->app->screen, src, posX, posY);
+  pntr_draw_image(appData->app->screen, src, posX, posY);
 })
 
 // Draw a tinted image on the screen
 HOST_FUNCTION(void, draw_image_tint, (uint32_t srcPtr, int32_t posX, int32_t posY, uint32_t tintPtr), {
   pntr_image* src = appData->images[srcPtr];
   pntr_color tint = cart_color(tintPtr);
-  pntr_draw_image_tint_fill(appData->app->screen, src, posX, posY, tint);
+  pntr_draw_image_tint(appData->app->screen, src, posX, posY, tint);
 })
 
 // Draw an image, rotated, on the screen
 HOST_FUNCTION(void, draw_image_rotated, (uint32_t srcPtr, int32_t posX, int32_t posY, float degrees, float offsetX, float offsetY, uint32_t filter), {
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_rotated_fill(appData->app->screen, src, posX, posY, degrees, offsetX, offsetY, filter);
+  pntr_draw_image_rotated(appData->app->screen, src, posX, posY, degrees, offsetX, offsetY, filter);
 })
 
 // Draw an image, flipped, on the screen
 HOST_FUNCTION(void, draw_image_flipped, (uint32_t srcPtr, int32_t posX, int32_t posY, bool flipHorizontal, bool flipVertical, bool flipDiagonal), {
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_flipped_fill(appData->app->screen, src, posX, posY, flipHorizontal, flipVertical, flipDiagonal);
+  pntr_draw_image_flipped(appData->app->screen, src, posX, posY, flipHorizontal, flipVertical, flipDiagonal);
 })
 
 // Draw an image, scaled, on the screen
 HOST_FUNCTION(void, draw_image_scaled, (uint32_t srcPtr, int32_t posX, int32_t posY, float scaleX, float scaleY, float offsetX, float offsetY, uint32_t filter), {
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_scaled_fill(appData->app->screen, src, posX, posY, scaleX, scaleY, offsetX, offsetY, filter);
+  pntr_draw_image_scaled(appData->app->screen, src, posX, posY, scaleX, scaleY, offsetX, offsetY, filter);
 })
 
 // Draw some text on the screen
@@ -282,7 +281,7 @@ HOST_FUNCTION(void, draw_text, (uint32_t fontPtr, uint32_t textPtr, int32_t posX
   pntr_font* font = appData->fonts[fontPtr];
   char* text = copy_from_cart_string(textPtr);
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_text_fill(appData->app->screen, font, text, posX, posY, color);
+  pntr_draw_text(appData->app->screen, font, text, posX, posY, color);
 })
 
 // Save an image to persistant storage
@@ -507,70 +506,70 @@ HOST_FUNCTION(void, clear_on_image, (uint32_t destinationPtr, uint32_t colorPtr)
 HOST_FUNCTION(void, draw_point_on_image, (uint32_t destinationPtr, int32_t x, int32_t y, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_point_on_image_fill(appData->app->screen, destination, x, y, color);
+  pntr_draw_point(destination, x, y, color);
 })
 
 // Draw a line on an image
 HOST_FUNCTION(void, draw_line_on_image, (uint32_t destinationPtr, int32_t startPosX, int32_t startPosY, int32_t endPosX, int32_t endPosY, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_line_on_image_fill(appData->app->screen, destination, startPosX, startPosY, endPosX, endPosY, color);
+  pntr_draw_line(destination, startPosX, startPosY, endPosX, endPosY, color);
 })
 
 // Draw a filled rectangle on an image
 HOST_FUNCTION(void, draw_rectangle_on_image, (uint32_t destinationPtr, int32_t posX, int32_t posY, int32_t width, int32_t height, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_rectangle_on_image_fill(appData->app->screen, destination, posX, posY, width, height, color);
+  pntr_draw_rectangle(destination, posX, posY, width, height, color);
 })
 
 // Draw a filled triangle on an image
 HOST_FUNCTION(void, draw_triangle_on_image, (uint32_t destinationPtr, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_triangle_on_image_fill(appData->app->screen, destination, x1, y1, x2, y2, x3, y3, color);
+  pntr_draw_triangle(destination, x1, y1, x2, y2, x3, y3, color);
 })
 
 // Draw a filled ellipse on an image
 HOST_FUNCTION(void, draw_ellipse_on_image, (uint32_t destinationPtr, int32_t centerX, int32_t centerY, int32_t radiusX, int32_t radiusY, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_ellipse_on_image_fill(appData->app->screen, destination, centerX, centerY, radiusX, radiusY, color);
+  pntr_draw_ellipse(destination, centerX, centerY, radiusX, radiusY, color);
 })
 
 // Draw a circle on an image
 HOST_FUNCTION(void, draw_circle_on_image, (uint32_t destinationPtr, int32_t centerX, int32_t centerY, int32_t radius, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_circle_on_image_fill(appData->app->screen, destination, centerX, centerY, radius, color);
+  pntr_draw_circle(destination, centerX, centerY, radius, color);
 })
 
 // Draw a filled polygon on an image
 HOST_FUNCTION(void, draw_polygon_on_image, (uint32_t destinationPtr, uint32_t points, int32_t numPoints, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_polygon_on_image_fill(appData->app->screen, destination, points, numPoints, color);
+  pntr_draw_polygon(destination, points, numPoints, color);
 })
 
 // Draw several lines on an image
 HOST_FUNCTION(void, draw_polyline_on_image, (uint32_t destinationPtr, uint32_t points, int32_t numPoints, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_polyline_on_image_fill(appData->app->screen, destination, points, numPoints, color);
+  pntr_draw_polyline(destination, points, numPoints, color);
 })
 
 // Draw a filled round-rectangle on an image
 HOST_FUNCTION(void, draw_rectangle_rounded_on_image, (uint32_t destinationPtr, int32_t x, int32_t y, int32_t width, int32_t height, int32_t cornerRadius, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_rectangle_rounded_on_image_fill(appData->app->screen, destination, x, y, width, height, cornerRadius, color);
+  pntr_draw_rectangle_rounded_fill(destination, x, y, width, height, cornerRadius, color);
 })
 
 // Draw an image on an image
 HOST_FUNCTION(void, draw_image_on_image, (uint32_t destinationPtr, uint32_t srcPtr, int32_t posX, int32_t posY), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_on_image_fill(appData->app->screen, destination, src, posX, posY);
+  pntr_draw_image(destination, src, posX, posY);
 })
 
 // Draw a tinted image on an image
@@ -578,28 +577,28 @@ HOST_FUNCTION(void, draw_image_tint_on_image, (uint32_t destinationPtr, uint32_t
   pntr_image* destination = appData->images[destinationPtr];
   pntr_image* src = appData->images[srcPtr];
   pntr_color tint = cart_color(tintPtr);
-  pntr_draw_image_tint_on_image_fill(appData->app->screen, destination, src, posX, posY, tint);
+  pntr_draw_image_tint(destination, src, posX, posY, tint);
 })
 
 // Draw an image, rotated, on an image
 HOST_FUNCTION(void, draw_image_rotated_on_image, (uint32_t destinationPtr, uint32_t srcPtr, int32_t posX, int32_t posY, float degrees, float offsetX, float offsetY, uint32_t filter), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_rotated_on_image_fill(appData->app->screen, destination, src, posX, posY, degrees, offsetX, offsetY, filter);
+  pntr_draw_image_rotated(destination, src, posX, posY, degrees, offsetX, offsetY, filter);
 })
 
 // Draw an image, flipped, on an image
 HOST_FUNCTION(void, draw_image_flipped_on_image, (uint32_t destinationPtr, uint32_t srcPtr, int32_t posX, int32_t posY, bool flipHorizontal, bool flipVertical, bool flipDiagonal), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_flipped_on_image_fill(appData->app->screen, destination, src, posX, posY, flipHorizontal, flipVertical, flipDiagonal);
+  pntr_draw_image_flipped(destination, src, posX, posY, flipHorizontal, flipVertical, flipDiagonal);
 })
 
 // Draw an image, scaled, on an image
 HOST_FUNCTION(void, draw_image_scaled_on_image, (uint32_t destinationPtr, uint32_t srcPtr, int32_t posX, int32_t posY, float scaleX, float scaleY, float offsetX, float offsetY, uint32_t filter), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_image* src = appData->images[srcPtr];
-  pntr_draw_image_scaled_on_image_fill(appData->app->screen, destination, src, posX, posY, scaleX, scaleY, offsetX, offsetY, filter);
+  pntr_draw_image_scaled(destination, src, posX, posY, scaleX, scaleY, offsetX, offsetY, filter);
 })
 
 // Draw some text on an image
@@ -608,13 +607,13 @@ HOST_FUNCTION(void, draw_text_on_image, (uint32_t destinationPtr, uint32_t fontP
   pntr_font* font = appData->fonts[fontPtr];
   char* text = copy_from_cart_string(textPtr);
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_text_on_image_fill(appData->app->screen, destination, font, text, posX, posY, color);
+  pntr_draw_text(destination, font, text, posX, posY, color);
 })
 
 // Draw a 1px outlined rectangle on the screen
 HOST_FUNCTION(void, draw_rectangle_outline, (int32_t posX, int32_t posY, int32_t width, int32_t height, int32_t thickness, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_rectangle_thick(appData->app->screen, posX, posY, width, height, thickness, color);
+  // pntr_draw_rectangle_thick(appData->app->screen, posX, posY, width, height, thickness, color);
 })
 
 // Draw a 1px outlined triangle on the screen
@@ -650,7 +649,7 @@ HOST_FUNCTION(void, draw_arc_outline, (int32_t centerX, int32_t centerY, float r
 // Draw a 1px outlined round-rectangle on the screen
 HOST_FUNCTION(void, draw_rectangle_rounded_outline, (int32_t x, int32_t y, int32_t width, int32_t height, int32_t cornerRadius, int32_t thickness, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_rectangle_rounded_thick(appData->app->screen, x, y, width, height, cornerRadius, thickness, color);
+  pntr_draw_rectangle_rounded_thick(appData->app->screen, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
 })
 
 // Draw a 1px outlined rectangle on an image
@@ -692,7 +691,7 @@ HOST_FUNCTION(void, draw_polygon_outline_on_image, (uint32_t destinationPtr, uin
 HOST_FUNCTION(void, draw_rectangle_rounded_outline_on_image, (uint32_t destinationPtr, int32_t x, int32_t y, int32_t width, int32_t height, int32_t cornerRadius, int32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, thickness, color);
+  pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
 })
 
 
