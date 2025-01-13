@@ -7,7 +7,10 @@ bool Init(pntr_app *app) {
   }
 
   AppData *appData = pntr_load_memory(sizeof(AppData));
+
+  // link in both directions
   pntr_app_set_userdata(app, appData);
+  appData->app = app;
 
   unsigned int size = 0;
   void *data = pntr_app_load_arg_file(app, &size);
@@ -48,8 +51,7 @@ bool Init(pntr_app *app) {
   }
 
   // setup images & fonts (0 is default)
-  appData->screen = app->screen;
-  cvector_push_back(appData->images, appData->screen);
+  cvector_push_back(appData->images, app->screen);
   cvector_push_back(appData->fonts, pntr_load_font_default());
 
   if (!null0_host_init(appData, wasmBytes, wasmSize)) {
@@ -85,7 +87,8 @@ pntr_app Main(int argc, char *argv[]) {
   (void)argv;
 
 #ifdef PNTR_APP_RAYLIB
-  SetTraceLogLevel(LOG_WARNING);
+  // SetTraceLogLevel(LOG_WARNING);
+  SetTraceLogLevel(LOG_DEBUG);
 #endif
 
   return (pntr_app){.width = 640,

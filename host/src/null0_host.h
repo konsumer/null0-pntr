@@ -1,3 +1,5 @@
+// this includes all that is needed by a null0 host, and sets things up for it
+
 #pragma once
 
 #define PNTR_APP_IMPLEMENTATION
@@ -5,54 +7,99 @@
 #define PNTR_ENABLE_VARGS
 #include "pntr_app.h"
 
-#define FS_IMPLEMENTATION
 #include <stdlib.h>
 #include <string.h>
 
+#define FS_IMPLEMENTATION
 #include "fs.h"
 
 #define CVECTOR_LOGARITHMIC_GROWTH
 #include "cvector.h"
 
-#ifdef EMSCRIPTEN
-#include "emscripten.h"
+// shared user-data that will be passed to all host-functions
 typedef struct AppData {
-} AppData;
-#else
-#include <wasm_export.h>
-typedef struct AppData {
-  wasm_module_t module;
-  wasm_module_inst_t module_inst;
-  wasm_exec_env_t exec_env;
-  wasm_function_inst_t cart_unload;
-  wasm_function_inst_t cart_update;
-  wasm_function_inst_t cart_buttonUp;
-  wasm_function_inst_t cart_buttonDown;
-  wasm_function_inst_t cart_keyUp;
-  wasm_function_inst_t cart_keyDown;
-
+  pntr_app *app;
   cvector_vector_type(pntr_font *) fonts;
   cvector_vector_type(pntr_image *) images;
   cvector_vector_type(pntr_sound *) sounds;
-
-  pntr_image *screen;
 } AppData;
-#endif
+
+typedef struct {
+  unsigned char r;
+  unsigned char g;
+  unsigned char b;
+  unsigned char a;
+} CartColor;
+
+// these should be implemented in your host
+// along with HOST_FUNCTION
 
 // intiialize wasm (after cart is loaded)
-bool null0_host_init(
-  AppData *appData,
-  unsigned char *wasmBytes,
-  unsigned int wasmSize);
+bool null0_host_init(AppData *appData, unsigned char *wasmBytes, unsigned int wasmSize);
 
 // cleanup wasm
 void null0_host_cleanup(AppData *appData);
 
 // called on every frame to update screen
-void null_host_update(AppData *appData, float deltaTime);
+void null0_host_update(AppData *appData, float deltaTime);
 
+// copy a host-pointer to cart when you already have a cart-pointer
+void copy_to_cart_with_pointer(uint32_t cartPtr, void *hostPtr, uint32_t size);
+
+// copy a cart-pointer to host when you already have a host-pointer
+void copy_from_cart_with_pointer(void *hostPtr, uint32_t cartPtr, uint32_t size);
+
+// allocate some memory in cart
+uint32_t cart_malloc(uint32_t size);
+
+// free some memory in cart
+void cart_free(uint32_t ptr);
+
+// get the strlen of a cart-pointer
+uint32_t cart_strlen(uint32_t cartPtr);
+
+// these are derived from above
+
+// copy a host-pointer to cart, return cart-pointer
+uint32_t copy_to_cart(void *hostPtr, uint32_t size) {
+  uint32_t cartPtr = cart_malloc(size);
+  copy_to_cart_with_pointer(cartPtr, hostPtr, size);
+  return cartPtr;
+}
+
+// copy a cart-pointer to host, return host-pointer
+void *copy_from_cart(uint32_t cartPtr, uint32_t size) {
+  void *hostPtr = malloc(size);
+  copy_from_cart_with_pointer(hostPtr, cartPtr, size);
+  return hostPtr;
+}
+
+// copy a cart-pointer to a host-string
+char *copy_from_cart_string(uint32_t cartPtr) {
+  uint32_t size = cart_strlen(cartPtr);
+  return (char *)copy_from_cart(cartPtr, size + 1);
+}
+
+// copy a host-string to a cart-pointer
+uint32_t copy_to_cart_string(char *hostPtr) {
+  uint32_t size = strlen(hostPtr);
+  return copy_to_cart(hostPtr, size + 1);
+}
+
+// get a color from cart
+pntr_color cart_color(uint32_t colorPtr) {
+  CartColor *c = copy_from_cart(colorPtr, sizeof(CartColor));
+  pntr_color ret = pntr_new_color(c->r, c->g, c->b, c->a);
+  free(c);
+  return ret;
+}
+
+// load the host-specifc implementation
 #ifdef EMSCRIPTEN
 #include "null0_host_web.h"
 #else
 #include "null0_host_native.h"
 #endif
+
+// shared definitions for all hosts
+#include "null0_host_api.h"

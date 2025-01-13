@@ -5,8 +5,7 @@ int main() {
   return 0;
 }
 
-NULL0_EXPORT("update")
-void update() {
+void update(float deltaTime) {
   clear(BLACK);
   draw_ellipse(100, 100, 100, 50, WHITE);
 

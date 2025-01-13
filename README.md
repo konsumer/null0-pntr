@@ -1,17 +1,13 @@
 ```
-# configure for all
-cmake -B build -G Ninja
+# build all: web/native host and carts
+npm run build
 
-# build native host
-cmake --build build --target null0
+# build just web
+npm run build:web
 
-# build a single cart
-cmake --build build --target draw
+# build just native-host
+npm run build:native
 
-
-# configre for web
-emcmake cmake -B wbuild -G Ninja
-
-# build web host
-cmake --build wuild --target null0
+# build just carts
+npm run build:carts
 ```

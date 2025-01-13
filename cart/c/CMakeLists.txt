@@ -36,13 +36,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_EXECUTABLE_SUFFIX ".wasm")
 
 function(BUILDCART name)
-  add_executable(${name} ${name}/main.c)
-  add_custom_command(
-    TARGET ${name}
-    POST_BUILD
-    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/buildcart.sh"
-    ARGS "${CMAKE_CURRENT_BINARY_DIR}/${name}.null0" "${CMAKE_CURRENT_BINARY_DIR}/${name}.wasm" "${CMAKE_CURRENT_SOURCE_DIR}/${name}"
-  )
+    add_executable(${name} ${name}/main.c)
+    add_custom_command(
+        TARGET ${name}
+        POST_BUILD
+        COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/buildcart.sh"
+        ARGS "${CMAKE_CURRENT_BINARY_DIR}/${name}.null0" "${CMAKE_CURRENT_BINARY_DIR}/${name}.wasm" "${CMAKE_CURRENT_SOURCE_DIR}/${name}"
+    )
+    set(CART_TARGETS ${CART_TARGETS} ${name} PARENT_SCOPE)
 endfunction()
 
 BUILDCART("colorbars")
@@ -51,7 +52,6 @@ BUILDCART("filesystem")
 BUILDCART("hello")
 BUILDCART("input")
 BUILDCART("justlog")
-BUILDCART("sound")
-BUILDCART("tracker")
-BUILDCART("flappybird")
 BUILDCART("typesizes")
+
+add_custom_target(carts ALL DEPENDS ${CART_TARGETS})

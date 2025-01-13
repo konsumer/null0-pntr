@@ -36,8 +36,7 @@ int main() {
   return 0;
 }
 
-NULL0_EXPORT("update")
-void update() {
+void update(float deltaTime) {
   clear(BLACK);
 
   int x;

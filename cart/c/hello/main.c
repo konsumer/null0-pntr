@@ -11,8 +11,7 @@ int main() {
   return 0;
 }
 
-NULL0_EXPORT("update")
-void update() {
+void update(float deltaTime) {
   clear(BLACK);
   draw_text(0, "Hello from null0", w + 1, (HEIGHT / 2) + 1, BLUE);
   draw_text(0, "Hello from null0", w, HEIGHT / 2, RED);

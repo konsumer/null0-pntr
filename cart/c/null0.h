@@ -23,14 +23,24 @@ typedef uint64_t u64;
 typedef float f32;
 
 NULL0_EXPORT("malloc")
-void* _null0_malloc(size_t size) {
+void *_null0_malloc(size_t size) {
   return malloc(size);
 }
 
 NULL0_EXPORT("free")
-void _null0_free(void* ptr) {
+void _null0_free(void *ptr) {
   free(ptr);
 }
+
+// callbacks for cart to implement
+NULL0_EXPORT("load")
+void load();
+
+NULL0_EXPORT("update")
+void update(float deltaTime);
+
+NULL0_EXPORT("unload")
+void unload();
 
 typedef struct {
   u32 width;
@@ -233,24 +243,24 @@ typedef enum Key {
 } Key;
 
 typedef enum GamepadButton {
-  GAMEPAD_BUTTON_UNKNOWN = 0,     // Unknown button, just for error checking
-  GAMEPAD_BUTTON_UP = 1,          // Gamepad left DPAD up button
-  GAMEPAD_BUTTON_RIGHT,           // Gamepad left DPAD right button
-  GAMEPAD_BUTTON_DOWN,            // Gamepad left DPAD down button
-  GAMEPAD_BUTTON_LEFT,            // Gamepad left DPAD left button
-  GAMEPAD_BUTTON_Y,               // Gamepad right button up (i.e. PS3: Triangle, Xbox: Y)
-  GAMEPAD_BUTTON_B,               // Gamepad right button right (i.e. PS3: Square, Xbox: X)
-  GAMEPAD_BUTTON_A,               // Gamepad right button down (i.e. PS3: Cross, Xbox: A)
-  GAMEPAD_BUTTON_X,               // Gamepad right button left (i.e. PS3: Circle, Xbox: B)
-  GAMEPAD_BUTTON_LEFT_SHOULDER,   // Gamepad top/back trigger left (first), it could be a trailing button
-  GAMEPAD_BUTTON_LEFT_TRIGGER,    // Gamepad top/back trigger left (second), it could be a trailing button
-  GAMEPAD_BUTTON_RIGHT_SHOULDER,  // Gamepad top/back trigger right (one), it could be a trailing button
-  GAMEPAD_BUTTON_RIGHT_TRIGGER,   // Gamepad top/back trigger right (second), it could be a trailing button
-  GAMEPAD_BUTTON_SELECT,          // Gamepad center buttons, left one (i.e. PS3: Select)
-  GAMEPAD_BUTTON_MENU,            // Gamepad center buttons, middle one (i.e. PS3: PS, Xbox: XBOX)
-  GAMEPAD_BUTTON_START,           // Gamepad center buttons, right one (i.e. PS3: Start)
-  GAMEPAD_BUTTON_LEFT_THUMB,      // Gamepad joystick pressed button left
-  GAMEPAD_BUTTON_RIGHT_THUMB,     // Gamepad joystick pressed button right
+  GAMEPAD_BUTTON_UNKNOWN = 0,    // Unknown button, just for error checking
+  GAMEPAD_BUTTON_UP = 1,         // Gamepad left DPAD up button
+  GAMEPAD_BUTTON_RIGHT,          // Gamepad left DPAD right button
+  GAMEPAD_BUTTON_DOWN,           // Gamepad left DPAD down button
+  GAMEPAD_BUTTON_LEFT,           // Gamepad left DPAD left button
+  GAMEPAD_BUTTON_Y,              // Gamepad right button up (i.e. PS3: Triangle, Xbox: Y)
+  GAMEPAD_BUTTON_B,              // Gamepad right button right (i.e. PS3: Square, Xbox: X)
+  GAMEPAD_BUTTON_A,              // Gamepad right button down (i.e. PS3: Cross, Xbox: A)
+  GAMEPAD_BUTTON_X,              // Gamepad right button left (i.e. PS3: Circle, Xbox: B)
+  GAMEPAD_BUTTON_LEFT_SHOULDER,  // Gamepad top/back trigger left (first), it could be a trailing button
+  GAMEPAD_BUTTON_LEFT_TRIGGER,   // Gamepad top/back trigger left (second), it could be a trailing button
+  GAMEPAD_BUTTON_RIGHT_SHOULDER, // Gamepad top/back trigger right (one), it could be a trailing button
+  GAMEPAD_BUTTON_RIGHT_TRIGGER,  // Gamepad top/back trigger right (second), it could be a trailing button
+  GAMEPAD_BUTTON_SELECT,         // Gamepad center buttons, left one (i.e. PS3: Select)
+  GAMEPAD_BUTTON_MENU,           // Gamepad center buttons, middle one (i.e. PS3: PS, Xbox: XBOX)
+  GAMEPAD_BUTTON_START,          // Gamepad center buttons, right one (i.e. PS3: Start)
+  GAMEPAD_BUTTON_LEFT_THUMB,     // Gamepad joystick pressed button left
+  GAMEPAD_BUTTON_RIGHT_THUMB,    // Gamepad joystick pressed button right
 } GamepadButton;
 
 typedef enum MouseButton {
@@ -332,12 +342,12 @@ Color RAYWHITE = (Color){.r = 245, .g = 245, .b = 245, .a = 255};
 #endif
 
 NULL0_IMPORT("trace")
-void _null0_trace_real(char* str);
+void _null0_trace_real(char *str);
 
 char null0_traceBuffer[NULL0_TRACE_SIZE];
 
 // Log a string (using printf-style)
-void trace(const char* format, ...) {
+void trace(const char *format, ...) {
   va_list args;
   va_start(args, format);
   vsnprintf(null0_traceBuffer, NULL0_TRACE_SIZE, format, args);
@@ -365,7 +375,7 @@ i32 random_int(i32 min, i32 max);
 
 // Load a sound from a file in cart
 NULL0_IMPORT("load_sound")
-u32 load_sound(char* filename);
+u32 load_sound(char *filename);
 
 // Play a sound
 NULL0_IMPORT("play_sound")
@@ -377,23 +387,23 @@ void stop_sound(u32 sound);
 
 // Create a new sound-effect from some sfxr params
 NULL0_IMPORT("new_sfx")
-u32 new_sfx(SfxParams* params);
+u32 new_sfx(SfxParams *params);
 
 // Generate randomized preset sfxr params
 NULL0_IMPORT("preset_sfx")
-void preset_sfx(SfxParams* params, SfxPresetType type);
+void preset_sfx(SfxParams *params, SfxPresetType type);
 
 // Randomize sfxr params
 NULL0_IMPORT("randomize_sfx")
-void randomize_sfx(SfxParams* params, SfxWaveType waveType);
+void randomize_sfx(SfxParams *params, SfxWaveType waveType);
 
 // Randomly mutate sfxr params
 NULL0_IMPORT("mutate_sfx")
-void mutate_sfx(SfxParams* params, f32 range, u32 mask);
+void mutate_sfx(SfxParams *params, f32 range, u32 mask);
 
 // Create a new sfxr from a .rfx file
 NULL0_IMPORT("load_sfx")
-void load_sfx(SfxParams* ret, char* filename);
+void load_sfx(SfxParams *ret, char *filename);
 
 // Unload a sound
 NULL0_IMPORT("unload_sound")
@@ -497,11 +507,11 @@ void draw_circle(i32 centerX, i32 centerY, i32 radius, Color color);
 
 // Draw a filled polygon on the screen
 NULL0_IMPORT("draw_polygon")
-void draw_polygon(Vector* points, i32 numPoints, Color color);
+void draw_polygon(Vector *points, i32 numPoints, Color color);
 
 // Draw several lines on the screen
 NULL0_IMPORT("draw_polyline")
-void draw_polyline(Vector* points, i32 numPoints, Color color);
+void draw_polyline(Vector *points, i32 numPoints, Color color);
 
 // Draw a filled arc on the screen
 NULL0_IMPORT("draw_arc")
@@ -533,15 +543,15 @@ void draw_image_scaled(u32 src, i32 posX, i32 posY, f32 scaleX, f32 scaleY, f32 
 
 // Draw some text on the screen
 NULL0_IMPORT("draw_text")
-void draw_text(u32 font, char* text, i32 posX, i32 posY, Color color);
+void draw_text(u32 font, char *text, i32 posX, i32 posY, Color color);
 
 // Save an image to persistant storage
 NULL0_IMPORT("save_image")
-void save_image(u32 image, char* filename);
+void save_image(u32 image, char *filename);
 
 // Load an image from a file in cart
 NULL0_IMPORT("load_image")
-u32 load_image(char* filename);
+u32 load_image(char *filename);
 
 // Resize an image, in-place
 NULL0_IMPORT("image_resize")
@@ -573,15 +583,15 @@ u32 font_scale(u32 font, f32 scaleX, f32 scaleY, ImageFilter filter);
 
 // Load a BMF font from a file in cart
 NULL0_IMPORT("load_font_bmf")
-u32 load_font_bmf(char* filename, char* characters);
+u32 load_font_bmf(char *filename, char *characters);
 
 // Load a BMF font from an image
 NULL0_IMPORT("load_font_bmf_from_image")
-u32 load_font_bmf_from_image(u32 image, char* characters);
+u32 load_font_bmf_from_image(u32 image, char *characters);
 
 // Measure the size of some text
 NULL0_IMPORT("measure_text")
-Dimensions measure_text(u32 font, char* text);
+Dimensions measure_text(u32 font, char *text);
 
 // Meaure an image (use 0 for screen)
 NULL0_IMPORT("measure_image")
@@ -589,15 +599,15 @@ Dimensions measure_image(u32 image);
 
 // Load a TTY font from a file in cart
 NULL0_IMPORT("load_font_tty")
-u32 load_font_tty(char* filename, i32 glyphWidth, i32 glyphHeight, char* characters);
+u32 load_font_tty(char *filename, i32 glyphWidth, i32 glyphHeight, char *characters);
 
 // Load a TTY font from an image
 NULL0_IMPORT("load_font_tty_from_image")
-u32 load_font_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char* characters);
+u32 load_font_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char *characters);
 
 // Load a TTF font from a file in cart
 NULL0_IMPORT("load_font_ttf")
-u32 load_font_ttf(char* filename, i32 fontSize);
+u32 load_font_ttf(char *filename, i32 fontSize);
 
 // Invert the colors in an image, in-place
 NULL0_IMPORT("image_color_invert")
@@ -677,11 +687,11 @@ void draw_circle_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius,
 
 // Draw a filled polygon on an image
 NULL0_IMPORT("draw_polygon_on_image")
-void draw_polygon_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
+void draw_polygon_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
 
 // Draw several lines on an image
 NULL0_IMPORT("draw_polyline_on_image")
-void draw_polyline_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
+void draw_polyline_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
 
 // Draw a filled round-rectangle on an image
 NULL0_IMPORT("draw_rectangle_rounded_on_image")
@@ -709,7 +719,7 @@ void draw_image_scaled_on_image(u32 destination, u32 src, i32 posX, i32 posY, f3
 
 // Draw some text on an image
 NULL0_IMPORT("draw_text_on_image")
-void draw_text_on_image(u32 destination, u32 font, char* text, i32 posX, i32 posY, Color color);
+void draw_text_on_image(u32 destination, u32 font, char *text, i32 posX, i32 posY, Color color);
 
 // Draw a 1px outlined rectangle on the screen
 NULL0_IMPORT("draw_rectangle_outline")
@@ -729,7 +739,7 @@ void draw_circle_outline(i32 centerX, i32 centerY, i32 radius, Color color);
 
 // Draw a 1px outlined polygon on the screen
 NULL0_IMPORT("draw_polygon_outline")
-void draw_polygon_outline(Vector* points, i32 numPoints, Color color);
+void draw_polygon_outline(Vector *points, i32 numPoints, Color color);
 
 // Draw a 1px outlined arc on the screen
 NULL0_IMPORT("draw_arc_outline")
@@ -757,7 +767,7 @@ void draw_circle_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32
 
 // Draw a 1px outlined polygon on an image
 NULL0_IMPORT("draw_polygon_outline_on_image")
-void draw_polygon_outline_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
+void draw_polygon_outline_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
 
 // Draw a 1px outlined round-rectangle on an image
 NULL0_IMPORT("draw_rectangle_rounded_outline_on_image")
@@ -767,33 +777,33 @@ void draw_rectangle_rounded_outline_on_image(u32 destination, i32 x, i32 y, i32 
 
 // Get info about a single file
 NULL0_IMPORT("file_info")
-FileInfo file_info(char* filename);
+FileInfo file_info(char *filename);
 
 // Read a file from cart
 NULL0_IMPORT("file_read")
-void _null0_file_read(char* filename, u32* bytesRead, u8* ret);
-u8* file_read(char* filename, u32* bytesRead) {
+void _null0_file_read(char *filename, u32 *bytesRead, u8 *ret);
+u8 *file_read(char *filename, u32 *bytesRead) {
   FileInfo i = file_info(filename);
-  u8* ret = malloc(i.filesize);
+  u8 *ret = malloc(i.filesize);
   _null0_file_read(filename, bytesRead, ret);
   return ret;
 }
 
 // Write a file to persistant storage
 NULL0_IMPORT("file_write")
-bool file_write(char* filename, u8* data, u32 byteSize);
+bool file_write(char *filename, u8 *data, u32 byteSize);
 
 // Write a file to persistant storage, appending to the end
 NULL0_IMPORT("file_append")
-bool file_append(char* filename, u8* data, u32 byteSize);
+bool file_append(char *filename, u8 *data, u32 byteSize);
 
 // Get list of files in a directory
 NULL0_IMPORT("file_list")
-char** file_list(char* dir);
+char **file_list(char *dir);
 
 // Get the user's writable dir (where file writes or appends go)
 NULL0_IMPORT("get_write_dir")
-char* get_write_dir();
+char *get_write_dir();
 
 /////////// COLORS ///////////
 
