@@ -40,9 +40,7 @@ int main() {
 float currentTime = 0.0f;
 
 void update(float deltaTime) {
-  currentTime += deltaTime;
-  int i = round(currentTime);
-  clear(colors[i % 26]);
+  clear(colors[(int)round(currentTime += deltaTime) % 26]);
 
   int x;
   int c = 0;
