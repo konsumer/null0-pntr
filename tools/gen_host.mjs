@@ -130,5 +130,3 @@ for (const filename of await glob('api/**/*.yml')) {
 }
 
 console.log(out.join('\n'))
-
-// await writeFile('host/src/null0_host_api.h', out.join('\n'))

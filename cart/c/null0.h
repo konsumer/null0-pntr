@@ -1,5 +1,3 @@
-// This is the API for null0 carts
-
 #pragma once
 
 #include <stdarg.h>
@@ -21,26 +19,6 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 typedef float f32;
-
-NULL0_EXPORT("malloc")
-void *_null0_malloc(size_t size) {
-  return malloc(size);
-}
-
-NULL0_EXPORT("free")
-void _null0_free(void *ptr) {
-  free(ptr);
-}
-
-// callbacks for cart to implement
-NULL0_EXPORT("load")
-void load();
-
-NULL0_EXPORT("update")
-void update(float deltaTime);
-
-NULL0_EXPORT("unload")
-void unload();
 
 typedef struct {
   u32 width;
@@ -336,6 +314,51 @@ Color BLANK = (Color){.r = 0, .g = 0, .b = 0, .a = 0};
 Color MAGENTA = (Color){.r = 255, .g = 0, .b = 255, .a = 255};
 Color RAYWHITE = (Color){.r = 245, .g = 245, .b = 245, .a = 255};
 
+// basic memory-management from host
+
+NULL0_EXPORT("malloc")
+void *_null0_malloc(size_t size) {
+  return malloc(size);
+}
+
+NULL0_EXPORT("free")
+void _null0_free(void *ptr) {
+  free(ptr);
+}
+
+// callbacks for cart to implement
+
+// called on load, you can also use main()
+NULL0_EXPORT("load")
+void load();
+
+// called on every frame
+NULL0_EXPORT("update")
+void update(float deltaTime);
+
+// called when the cart is unloaded
+NULL0_EXPORT("unload")
+void unload();
+
+// mapped controller callback
+NULL0_EXPORT("buttonUp")
+void buttonUp(GamepadButton button);
+
+// mapped controller callback
+NULL0_EXPORT("buttonDown")
+void buttonDown(GamepadButton button);
+
+// called when keys are unpressed
+NULL0_EXPORT("keyUp")
+void keyUp(Key key);
+
+// called when keys are pressed
+NULL0_EXPORT("keyDown")
+void keyDown(Key key);
+
+
+// UTILITIES
+
 // max-size for trace messages
 #ifndef NULL0_TRACE_SIZE
 #define NULL0_TRACE_SIZE 1024 * 1024 * 1024
@@ -346,7 +369,7 @@ void _null0_trace_real(char *str);
 
 char null0_traceBuffer[NULL0_TRACE_SIZE];
 
-// Log a string (using printf-style)
+// Log a string
 void trace(const char *format, ...) {
   va_list args;
   va_start(args, format);
@@ -354,10 +377,6 @@ void trace(const char *format, ...) {
   va_end(args);
   _null0_trace_real(null0_traceBuffer);
 }
-
-// | GENERATED |
-
-/////////// UTILITIES ///////////
 
 // Get system-time (ms) since unix epoch
 NULL0_IMPORT("current_time")
@@ -371,11 +390,12 @@ f32 delta_time();
 NULL0_IMPORT("random_int")
 i32 random_int(i32 min, i32 max);
 
-/////////// SOUND ///////////
+
+// SOUND
 
 // Load a sound from a file in cart
 NULL0_IMPORT("load_sound")
-u32 load_sound(char *filename);
+u32 load_sound(char* filename);
 
 // Play a sound
 NULL0_IMPORT("play_sound")
@@ -385,31 +405,24 @@ void play_sound(u32 sound, bool loop);
 NULL0_IMPORT("stop_sound")
 void stop_sound(u32 sound);
 
-// Create a new sound-effect from some sfxr params
-NULL0_IMPORT("new_sfx")
-u32 new_sfx(SfxParams *params);
-
-// Generate randomized preset sfxr params
-NULL0_IMPORT("preset_sfx")
-void preset_sfx(SfxParams *params, SfxPresetType type);
-
-// Randomize sfxr params
-NULL0_IMPORT("randomize_sfx")
-void randomize_sfx(SfxParams *params, SfxWaveType waveType);
-
-// Randomly mutate sfxr params
-NULL0_IMPORT("mutate_sfx")
-void mutate_sfx(SfxParams *params, f32 range, u32 mask);
-
-// Create a new sfxr from a .rfx file
-NULL0_IMPORT("load_sfx")
-void load_sfx(SfxParams *ret, char *filename);
-
 // Unload a sound
 NULL0_IMPORT("unload_sound")
 void unload_sound(u32 sound);
 
-/////////// INPUT ///////////
+// Generate randomized preset sfxr params
+NULL0_IMPORT("preset_sfx")
+SfxParams preset_sfx(SfxPresetType type);
+
+// Create a new sfxr from a .rfx file
+NULL0_IMPORT("load_sfx")
+SfxParams load_sfx(char* filename);
+
+// Convert SfxParams to a sound
+NULL0_IMPORT("sfx_to_sound")
+u32 sfx_to_sound(SfxParams input);
+
+
+// INPUT
 
 // Has the key been pressed? (tracks unpress/read correctly)
 NULL0_IMPORT("key_pressed")
@@ -439,10 +452,6 @@ bool gamepad_button_down(i32 gamepad, GamepadButton button);
 NULL0_IMPORT("gamepad_button_released")
 bool gamepad_button_released(i32 gamepad, GamepadButton button);
 
-// Is the button currently up?
-NULL0_IMPORT("gamepad_button_up")
-bool gamepad_button_up(i32 gamepad, GamepadButton button);
-
 // Get current position of mouse
 NULL0_IMPORT("mouse_position")
 Vector mouse_position();
@@ -463,7 +472,8 @@ bool mouse_button_released(MouseButton button);
 NULL0_IMPORT("mouse_button_up")
 bool mouse_button_up(MouseButton button);
 
-/////////// GRAPHICS ///////////
+
+// GRAPHICS
 
 // Create a new blank image
 NULL0_IMPORT("new_image")
@@ -507,11 +517,11 @@ void draw_circle(i32 centerX, i32 centerY, i32 radius, Color color);
 
 // Draw a filled polygon on the screen
 NULL0_IMPORT("draw_polygon")
-void draw_polygon(Vector *points, i32 numPoints, Color color);
+void draw_polygon(Vector* points, i32 numPoints, Color color);
 
 // Draw several lines on the screen
 NULL0_IMPORT("draw_polyline")
-void draw_polyline(Vector *points, i32 numPoints, Color color);
+void draw_polyline(Vector* points, i32 numPoints, Color color);
 
 // Draw a filled arc on the screen
 NULL0_IMPORT("draw_arc")
@@ -543,15 +553,15 @@ void draw_image_scaled(u32 src, i32 posX, i32 posY, f32 scaleX, f32 scaleY, f32 
 
 // Draw some text on the screen
 NULL0_IMPORT("draw_text")
-void draw_text(u32 font, char *text, i32 posX, i32 posY, Color color);
+void draw_text(u32 font, char* text, i32 posX, i32 posY, Color color);
 
 // Save an image to persistant storage
 NULL0_IMPORT("save_image")
-void save_image(u32 image, char *filename);
+void save_image(u32 image, char* filename);
 
 // Load an image from a file in cart
 NULL0_IMPORT("load_image")
-u32 load_image(char *filename);
+u32 load_image(char* filename);
 
 // Resize an image, in-place
 NULL0_IMPORT("image_resize")
@@ -583,15 +593,15 @@ u32 font_scale(u32 font, f32 scaleX, f32 scaleY, ImageFilter filter);
 
 // Load a BMF font from a file in cart
 NULL0_IMPORT("load_font_bmf")
-u32 load_font_bmf(char *filename, char *characters);
+u32 load_font_bmf(char* filename, char* characters);
 
 // Load a BMF font from an image
 NULL0_IMPORT("load_font_bmf_from_image")
-u32 load_font_bmf_from_image(u32 image, char *characters);
+u32 load_font_bmf_from_image(u32 image, char* characters);
 
 // Measure the size of some text
 NULL0_IMPORT("measure_text")
-Dimensions measure_text(u32 font, char *text);
+Dimensions measure_text(u32 font, char* text);
 
 // Meaure an image (use 0 for screen)
 NULL0_IMPORT("measure_image")
@@ -599,15 +609,15 @@ Dimensions measure_image(u32 image);
 
 // Load a TTY font from a file in cart
 NULL0_IMPORT("load_font_tty")
-u32 load_font_tty(char *filename, i32 glyphWidth, i32 glyphHeight, char *characters);
+u32 load_font_tty(char* filename, i32 glyphWidth, i32 glyphHeight, char* characters);
 
 // Load a TTY font from an image
 NULL0_IMPORT("load_font_tty_from_image")
-u32 load_font_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char *characters);
+u32 load_font_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char* characters);
 
 // Load a TTF font from a file in cart
 NULL0_IMPORT("load_font_ttf")
-u32 load_font_ttf(char *filename, i32 fontSize);
+u32 load_font_ttf(char* filename, i32 fontSize);
 
 // Invert the colors in an image, in-place
 NULL0_IMPORT("image_color_invert")
@@ -687,11 +697,11 @@ void draw_circle_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius,
 
 // Draw a filled polygon on an image
 NULL0_IMPORT("draw_polygon_on_image")
-void draw_polygon_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
+void draw_polygon_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
 
 // Draw several lines on an image
 NULL0_IMPORT("draw_polyline_on_image")
-void draw_polyline_on_image(u32 destination, Vector *points, i32 numPoints, Color color);
+void draw_polyline_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
 
 // Draw a filled round-rectangle on an image
 NULL0_IMPORT("draw_rectangle_rounded_on_image")
@@ -719,7 +729,7 @@ void draw_image_scaled_on_image(u32 destination, u32 src, i32 posX, i32 posY, f3
 
 // Draw some text on an image
 NULL0_IMPORT("draw_text_on_image")
-void draw_text_on_image(u32 destination, u32 font, char *text, i32 posX, i32 posY, Color color);
+void draw_text_on_image(u32 destination, u32 font, char* text, i32 posX, i32 posY, Color color);
 
 // Draw a 1px outlined rectangle on the screen
 NULL0_IMPORT("draw_rectangle_outline")
@@ -739,7 +749,7 @@ void draw_circle_outline(i32 centerX, i32 centerY, i32 radius, i32 thickness, Co
 
 // Draw a 1px outlined polygon on the screen
 NULL0_IMPORT("draw_polygon_outline")
-void draw_polygon_outline(Vector *points, i32 numPoints, i32 thickness, Color color);
+void draw_polygon_outline(Vector* points, i32 numPoints, i32 thickness, Color color);
 
 // Draw a 1px outlined arc on the screen
 NULL0_IMPORT("draw_arc_outline")
@@ -767,45 +777,41 @@ void draw_circle_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32
 
 // Draw a 1px outlined polygon on an image
 NULL0_IMPORT("draw_polygon_outline_on_image")
-void draw_polygon_outline_on_image(u32 destination, Vector *points, i32 numPoints, i32 thickness, Color color);
+void draw_polygon_outline_on_image(u32 destination, Vector* points, i32 numPoints, i32 thickness, Color color);
 
 // Draw a 1px outlined round-rectangle on an image
 NULL0_IMPORT("draw_rectangle_rounded_outline_on_image")
 void draw_rectangle_rounded_outline_on_image(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, i32 thickness, Color color);
 
-/////////// FILESYSTEM ///////////
 
-// Get info about a single file
-NULL0_IMPORT("file_info")
-FileInfo file_info(char *filename);
+// FILESYSTEM
 
-// Read a file from cart
+// Read a file from cart (or local persistant)
 NULL0_IMPORT("file_read")
-void _null0_file_read(char *filename, u32 *bytesRead, u8 *ret);
-u8 *file_read(char *filename, u32 *bytesRead) {
-  FileInfo i = file_info(filename);
-  u8 *ret = malloc(i.filesize);
-  _null0_file_read(filename, bytesRead, ret);
-  return ret;
-}
+u8* file_read(char* filename, u32* bytesRead);
 
 // Write a file to persistant storage
 NULL0_IMPORT("file_write")
-bool file_write(char *filename, u8 *data, u32 byteSize);
+bool file_write(char* filename, u8* data, u32 byteSize);
 
 // Write a file to persistant storage, appending to the end
 NULL0_IMPORT("file_append")
-bool file_append(char *filename, u8 *data, u32 byteSize);
+bool file_append(char* filename, u8* data, u32 byteSize);
+
+// Get info about a single file
+NULL0_IMPORT("file_info")
+FileInfo file_info(char* filename);
 
 // Get list of files in a directory
 NULL0_IMPORT("file_list")
-char **file_list(char *dir);
+char** file_list(char* dir);
 
 // Get the user's writable dir (where file writes or appends go)
 NULL0_IMPORT("get_write_dir")
-char *get_write_dir();
+char* get_write_dir();
 
-/////////// COLORS ///////////
+
+// COLORS
 
 // Tint a color with another color
 NULL0_IMPORT("color_tint")
@@ -827,7 +833,7 @@ Color color_invert(Color color);
 NULL0_IMPORT("color_alpha_blend")
 Color color_alpha_blend(Color dst, Color src);
 
-// color_contrast
+// Change contrast of a color
 NULL0_IMPORT("color_contrast")
 Color color_contrast(Color color, f32 contrast);
 
@@ -835,4 +841,3 @@ Color color_contrast(Color color, f32 contrast);
 NULL0_IMPORT("color_bilinear_interpolate")
 Color color_bilinear_interpolate(Color color00, Color color01, Color color10, Color color11, f32 coordinateX, f32 coordinateY);
 
-// | END GENERATED |

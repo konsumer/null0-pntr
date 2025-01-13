@@ -14,12 +14,12 @@ int main() {
 
   // read a file from the zip
   u32 bytesRead = 0;
-  char* bytes = file_read("assets/cyber.txt", &bytesRead);
+  u8* bytes = file_read("assets/cyber.txt", &bytesRead);
   trace("%u bytes read", bytesRead);
   trace("cyber: %s", bytes);
 
   // write files, and tell the user where their files went
-  bool ok = file_write("out.txt", "THIS IS A TEST.", 16);
+  bool ok = file_write("out.txt", (u8*)"THIS IS A TEST.", 16);
   trace("write file to %s: %s", get_write_dir(), ok ? "yes" : "no");
 
   return 0;
