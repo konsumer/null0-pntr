@@ -45,8 +45,8 @@ void update(float deltaTime) {
   int x;
   int c = 0;
   for (x = 20; x < (27 * 20); x += 20) {
-    draw_rectangle(0, x + 26, 10, 16, 10, WHITE);
-    draw_rectangle(0, x + 30, 30, 10, 420, colors[c++]);
-    draw_rectangle(0, x + 26, 460, 16, 10, WHITE);
+    draw_rectangle(0, x + 26, 10, 16, 10, 0, WHITE);
+    draw_rectangle(0, x + 30, 30, 10, 420, 0, colors[c++]);
+    draw_rectangle(0, x + 26, 460, 16, 10, 0, WHITE);
   }
 }

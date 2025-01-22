@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-22T12:05:17.410Z
+// it was generated on 2025-01-22T12:35:24.577Z
 
 #pragma once
 
@@ -202,22 +202,23 @@ HOST_FUNCTION(uint32_t, image_gradient, (int32_t width, int32_t height, uint32_t
 // Start a path
 HOST_FUNCTION(uint32_t, path_start, (uint32_t imagePtr), {
   pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called path_start");
+  pntr_brush* brush = pntr_load_brush(image);
+  pntr_brush_begin_path(brush);
+  uint32_t id = cvector_size(appData->brushes);
+  cvector_push_back(appData->brushes, brush);
+  return id;
 })
 
 // End a path
 HOST_FUNCTION(void, path_end, (uint32_t pathPtr), {
   pntr_brush* path = appData->brushes[pathPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called path_end");
+  pntr_brush_close_path(path);
 })
 
 // Draw a line to new position
 HOST_FUNCTION(void, line_to, (uint32_t pathPtr, int32_t x, int32_t y), {
   pntr_brush* path = appData->brushes[pathPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called line_to");
+  pntr_brush_line_to(path, x, y);
 })
 
 // Draw a curved line to new position
@@ -230,23 +231,24 @@ HOST_FUNCTION(void, curve_to, (uint32_t pathPtr, int32_t x, int32_t y, float rad
 // Move new position path to this position withou drawing
 HOST_FUNCTION(void, move_to, (uint32_t pathPtr, int32_t x, int32_t y), {
   pntr_brush* path = appData->brushes[pathPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called move_to");
+  pntr_brush_move_to(path, x, y);
 })
 
 // Fill current path with a color
 HOST_FUNCTION(void, fill, (uint32_t pathPtr, uint32_t colorPtr), {
   pntr_brush* path = appData->brushes[pathPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called fill");
+  pntr_brush_fill_style(path, color);
+  pntr_brush_fill(path);
 })
 
 // stroke current path with line
-HOST_FUNCTION(void, stroke, (uint32_t pathPtr, uint32_t thickness), {
+HOST_FUNCTION(void, stroke, (uint32_t pathPtr, uint32_t thickness, uint32_t colorPtr), {
   pntr_brush* path = appData->brushes[pathPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called stroke");
+  pntr_color color = cart_color(colorPtr);
+  pntr_brush_stroke_style(path, color);
+  pntr_brush_line_width(path, thickness);
+  pntr_brush_stroke(path);
 })
 
 

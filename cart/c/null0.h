@@ -488,7 +488,7 @@ void fill(u32 path, Color color);
 
 // stroke current path with line
 NULL0_IMPORT("stroke")
-void stroke(u32 path, u32 thickness);
+void stroke(u32 path, u32 thickness, Color color);
 
 
 // DRAW: SHAPES

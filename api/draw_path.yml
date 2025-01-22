@@ -46,5 +46,6 @@ stroke:
   args:
     path: Path
     thickness: u32
+    color: Color
   returns: void
   description: stroke current path with line
