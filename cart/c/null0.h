@@ -706,7 +706,7 @@ FileInfo file_info(char* filename);
 
 // Get list of files in a directory
 NULL0_IMPORT("file_list")
-char** file_list(char* dir);
+char** file_list(char* dir, u32* size);
 
 // Get the user's writable dir (where file writes or appends go)
 NULL0_IMPORT("get_write_dir")

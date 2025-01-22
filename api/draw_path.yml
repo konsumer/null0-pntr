@@ -8,7 +8,7 @@ path_end:
   args:
     path: Path
   returns: void
-  description: End a path
+  description: Connect start of a path to end
 
 line_to:
   args:
@@ -48,4 +48,4 @@ stroke:
     thickness: u32
     color: Color
   returns: void
-  description: stroke current path with line
+  description: Stroke current path with line

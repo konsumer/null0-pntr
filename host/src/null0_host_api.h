@@ -9,22 +9,22 @@
 // Create a new blank image
 HOST_FUNCTION(uint32_t, image_new, (int32_t width, int32_t height, uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called image_new");
+  uint32_t id = cvector_size(appData->images);
+  cvector_push_back(appData->images, pntr_gen_image_color(width, height, color));
+  return id;
 })
 
 // Unload an image
 HOST_FUNCTION(void, image_unload, (uint32_t imagePtr), {
   pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called image_unload");
+  pntr_unload_image(image);
 })
 
 // Meaure an image (use 0 for screen)
 HOST_FUNCTION(uint32_t, image_measure, (uint32_t imagePtr), {
   pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called image_measure");
+  pntr_vector dim = (pntr_vector){.x=image->x, .y=image->y};
+  return copy_to_cart(&dim, sizeof(dim));
 })
 
 // Copy an image to a new image
@@ -209,7 +209,7 @@ HOST_FUNCTION(uint32_t, path_start, (uint32_t imagePtr), {
   return id;
 })
 
-// End a path
+// Connect start of a path to end
 HOST_FUNCTION(void, path_end, (uint32_t pathPtr), {
   pntr_brush* path = appData->brushes[pathPtr];
   pntr_brush_close_path(path);
@@ -231,7 +231,7 @@ HOST_FUNCTION(void, curve_to, (uint32_t pathPtr, int32_t x, int32_t y, float rad
 // Move new position path to this position withou drawing
 HOST_FUNCTION(void, move_to, (uint32_t pathPtr, int32_t x, int32_t y), {
   pntr_brush* path = appData->brushes[pathPtr];
-  pntr_brush_move_to(path, x, y);
+  pntr_brush_move_to(path, x, y); 
 })
 
 // Fill current path with a color
@@ -242,7 +242,7 @@ HOST_FUNCTION(void, fill, (uint32_t pathPtr, uint32_t colorPtr), {
   pntr_brush_fill(path);
 })
 
-// stroke current path with line
+// Stroke current path with line
 HOST_FUNCTION(void, stroke, (uint32_t pathPtr, uint32_t thickness, uint32_t colorPtr), {
   pntr_brush* path = appData->brushes[pathPtr];
   pntr_color color = cart_color(colorPtr);
@@ -621,7 +621,7 @@ HOST_FUNCTION(uint32_t, file_info, (uint32_t filenamePtr), {
 })
 
 // Get list of files in a directory
-HOST_FUNCTION(uint32_t, file_list, (uint32_t dirPtr), {
+HOST_FUNCTION(uint32_t, file_list, (uint32_t dirPtr, uint32_t sizePtr), {
   char* dir = copy_from_cart_string(dirPtr);
   // TODO
   pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_list");
