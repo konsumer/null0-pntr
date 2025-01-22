@@ -1,0 +1,50 @@
+path_start:
+  args:
+    image: Image
+  returns: Path
+  description: Start a path
+
+path_end:
+  args:
+    path: Path
+  returns: void
+  description: End a path
+
+line_to:
+  args:
+    path: Path
+    x: i32
+    y: i32
+  returns: void
+  description: Draw a line to new position
+
+curve_to:
+  args:
+    path: Path
+    x: i32
+    y: i32
+    radius: f32
+  returns: void
+  description: Draw a curved line to new position
+
+move_to:
+  args:
+    path: Path
+    x: i32
+    y: i32
+  returns: void
+  description: Move new position path to this position withou drawing
+
+fill:
+  args:
+    path: Path
+    color: Color
+  returns: void
+  description: Fill current path with a color
+
+stroke:
+  args:
+    path: Path
+    thickness: u32
+  returns: void
+  description: stroke current path with line

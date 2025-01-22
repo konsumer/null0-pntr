@@ -1,0 +1,218 @@
+image_new:
+  args:
+    width: i32
+    height: i32
+    color: Color
+  returns: Image
+  description: Create a new blank image
+
+image_unload:
+  args:
+    image: Image
+  returns: void
+  description: Unload an image
+
+image_measure:
+  args:
+    image: Image
+  returns: Dimensions
+  description: Meaure an image (use 0 for screen)
+
+image_copy:
+  args:
+    image: Image
+  returns: Image
+  description: Copy an image to a new image
+
+subimage:
+  args:
+    image: Image
+    x: i32
+    y: i32
+    width: i32
+    height: i32
+  returns: Image
+  description: Create an image from a region of another image
+
+image_save:
+  args:
+    image: Image
+    filename: string
+  returns: void
+  description: Save an image to persistant storage
+
+image_load:
+  args:
+    filename: string
+  returns: Image
+  description: Load an image from a file in cart
+
+
+draw_image:
+  args:
+    destination: Image
+    src: Image
+    posX: i32
+    posY: i32
+  returns: void
+  description: Draw an image on an image
+
+draw_image_tint:
+  args:
+    destination: Image
+    src: Image
+    posX: i32
+    posY: i32
+    tint: Color
+  returns: void
+  description: Draw a tinted image on an image
+
+draw_image_rotated:
+  args:
+    destination: Image
+    src: Image
+    posX: i32
+    posY: i32
+    degrees: f32
+    offsetX: f32
+    offsetY: f32
+    filter: ImageFilter
+  returns: void
+  description: Draw an image, rotated, on an image
+
+draw_image_flipped:
+  args:
+    destination: Image
+    src: Image
+    posX: i32
+    posY: i32
+    flipHorizontal: bool
+    flipVertical: bool
+    flipDiagonal: bool
+  returns: void
+  description: Draw an image, flipped, on an image
+
+draw_image_scaled:
+  args:
+    destination: Image
+    src: Image
+    posX: i32
+    posY: i32
+    scaleX: f32
+    scaleY: f32
+    offsetX: f32
+    offsetY: f32
+    filter: ImageFilter
+  returns: void
+  description: Draw an image, scaled, on an image
+
+image_resize:
+  args:
+    image: Image
+    newWidth: i32
+    newHeight: i32
+    offsetX: i32
+    offsetY: i32
+    fill: Color
+  returns: void
+  description: Resize an image, in-place
+
+image_scale:
+  args:
+    image: Image
+    scaleX: f32
+    scaleY: f32
+    filter: ImageFilter
+  returns: void
+  description: Scale an image, in-place
+
+image_color_replace:
+  args:
+    image: Image
+    color: Color
+    replace: Color
+  returns: void
+  description: Replace a color in an image, in-place
+
+image_color_tint:
+  args:
+    image: Image
+    color: Color
+  returns: void
+  description: Tint a color in an image, in-place
+
+image_color_fade:
+  args:
+    image: Image
+    alpha: f32
+  returns: void
+  description: Fade a color in an image, in-place
+
+image_color_invert:
+  args:
+    image: Image
+  returns: void
+  description: Invert the colors in an image, in-place
+
+image_crop:
+  args:
+    image: Image
+    x: i32
+    y: i32
+    width: i32
+    height: i32
+  returns: void
+  description: Crop an image, in-place
+
+image_color_brightness:
+  args:
+    image: Image
+    factor: f32
+  returns: void
+  description: Adjust the brightness of an image, in-place
+
+image_flip:
+  args:
+    image: Image
+    horizontal: bool
+    vertical: bool
+  returns: void
+  description: Flip an image, in-place
+
+image_color_contrast:
+  args:
+    image: Image
+    contrast: f32
+  returns: void
+  description: Change the contrast of an image, in-place
+
+image_alpha_mask:
+  args:
+    image: Image
+    alphaMask: Image
+    posX: i32
+    posY: i32
+  returns: void
+  description: Use an image as an alpha-mask on another image
+
+image_rotate:
+  args:
+    image: Image
+    degrees: f32
+    filter: ImageFilter
+  returns: Image
+  description: Create a new image, rotating another image
+
+image_gradient:
+  args:
+    width: i32
+    height: i32
+    topLeft: Color
+    topRight: Color
+    bottomLeft: Color
+    bottomRight: Color
+  returns: Image
+  description: Create a new image of a gradient
+
+
+

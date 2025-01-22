@@ -7,6 +7,9 @@
 #define PNTR_ENABLE_VARGS
 #include "pntr_app.h"
 
+#define PNTR_BRUSH_IMPLEMENTATION
+#include "pntr_brush.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,6 +25,7 @@ typedef struct AppData {
   cvector_vector_type(pntr_font *) fonts;
   cvector_vector_type(pntr_image *) images;
   cvector_vector_type(pntr_sound *) sounds;
+  cvector_vector_type(pntr_brush *) brushes;
 } AppData;
 
 typedef struct {
@@ -42,6 +46,9 @@ void null0_host_cleanup(AppData *appData);
 
 // called on every frame to update screen
 void null0_host_update(AppData *appData, float deltaTime);
+
+// called when input-events happen
+void null0_host_event(AppData *appData, pntr_app_event *event);
 
 // copy a host-pointer to cart when you already have a cart-pointer
 void copy_to_cart_with_pointer(uint32_t cartPtr, void *hostPtr, uint32_t size);

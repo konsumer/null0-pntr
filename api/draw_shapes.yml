@@ -1,0 +1,116 @@
+clear:
+  args:
+    destination: Image
+    color: Color
+  returns: void
+  description: Clear an image
+
+draw_point:
+  args:
+    destination: Image
+    x: i32
+    y: i32
+    color: Color
+  returns: void
+  description: Draw a single pixel on an image
+
+draw_line:
+  args:
+    destination: Image
+    startPosX: i32
+    startPosY: i32
+    endPosX: i32
+    endPosY: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a line on an image
+
+draw_rectangle:
+  args:
+    destination: Image
+    posX: i32
+    posY: i32
+    width: i32
+    height: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a filled rectangle on an image. Set thickness to 0 for "fill".
+
+draw_triangle:
+  args:
+    destination: Image
+    x1: i32
+    y1: i32
+    x2: i32
+    y2: i32
+    x3: i32
+    y3: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a filled triangle on an image. Set thickness to 0 for "fill".
+
+draw_ellipse:
+  args:
+    destination: Image
+    centerX: i32
+    centerY: i32
+    radiusX: i32
+    radiusY: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a filled ellipse on an image. Set thickness to 0 for "fill".
+
+draw_circle:
+  args:
+    destination: Image
+    centerX: i32
+    centerY: i32
+    radius: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a circle on an image. Set thickness to 0 for "fill".
+
+draw_arc:
+  args:
+    destination: Image
+    centerX: i32
+    centerY: i32
+    radius: f32
+    startAngle: f32
+    endAngle: f32
+    segments: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw an arc on an image. Set thickness to 0 for "fill".
+
+
+draw_rectangle_rounded:
+  args:
+    destination: Image
+    x: i32
+    y: i32
+    width: i32
+    height: i32
+    cornerRadius: i32
+    thickness: u32
+    color: Color
+  returns: void
+  description: Draw a filled round-rectangle on an image. Set thickness to 0 for "fill".
+
+draw_text:
+  args:
+    destination: Image
+    font: Font
+    text: string
+    posX: i32
+    posY: i32
+    color: Color
+  returns: void
+  description: Draw some text on an image
+

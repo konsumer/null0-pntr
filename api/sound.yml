@@ -1,35 +1,35 @@
-load_sound:
+sound_load:
   args:
     filename: string
   returns: Sound
   description: Load a sound from a file in cart
 
-play_sound:
+sound_play:
   args:
     sound: Sound
     loop: bool
   returns: void
   description: Play a sound
 
-stop_sound:
+sound_stop:
   args:
     sound: Sound
   returns: void
   description: Stop a sound
 
-unload_sound:
+sound_unload:
   args:
     sound: Sound
   returns: void
   description: Unload a sound
 
-preset_sfx:
+sfx_preset:
   args:
     type: SfxPresetType
   returns: SfxParams
   description: Generate randomized preset sfxr params
 
-load_sfx:
+sfx_load:
   args:
     filename: string
   returns: SfxParams

@@ -15,7 +15,7 @@ function typemap (t) {
   if (t === 'bytes') {
     return 'u8*'
   }
-  if (['Image', 'Font', 'Sound'].includes(t)) {
+  if (['Image', 'Font', 'Sound', 'Path'].includes(t)) {
     return 'u32'
   }
   if (t.includes('[]')) {
@@ -387,7 +387,7 @@ void keyDown(Key key);
 for (const filename of await glob('api/**/*.yml')) {
   const api = YAML.parse(await readFile(filename, 'utf8'))
   const apiName = basename(filename, '.yml')
-  out.push('', `// ${apiName.toUpperCase()}`, '')
+  out.push('', `// ${apiName.toUpperCase().replace('_', ': ')}`, '')
   for (const [funcName, func] of Object.entries(api)) {
     if (funcName === 'trace') {
       out.push(`// max-size for trace messages
