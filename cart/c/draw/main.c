@@ -12,8 +12,8 @@ void update(float deltaTime) {
   draw_triangle(0, 400,400, 200,200, 300,0, 0, GREEN);
 
   draw_circle(0, 200,200, 60, 0, RED);
-  draw_rectangle(0, 300, 300, 60, 60, 0, RED);
-  draw_rectangle(0, 290, 290, 80, 80, 1, RED);
+  draw_rectangle(0, 300,300, 60,60, 0, RED);
+  draw_rectangle(0, 290,290, 80,80, 1, RED);
 
   draw_circle(0, 200,200, 70, 1, BLUE);
   draw_circle(0, 200,200, 80, 1, PURPLE);
