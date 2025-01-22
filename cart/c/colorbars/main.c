@@ -40,13 +40,13 @@ int main() {
 float currentTime = 0.0f;
 
 void update(float deltaTime) {
-  clear(colors[(int)round(currentTime += deltaTime) % 26]);
+  clear(0, colors[(int)round(currentTime += deltaTime) % 26]);
 
   int x;
   int c = 0;
   for (x = 20; x < (27 * 20); x += 20) {
-    draw_rectangle(x + 26, 10, 16, 10, WHITE);
-    draw_rectangle(x + 30, 30, 10, 420, colors[c++]);
-    draw_rectangle(x + 26, 460, 16, 10, WHITE);
+    draw_rectangle(0, x + 26, 10, 16, 10, WHITE);
+    draw_rectangle(0, x + 30, 30, 10, 420, colors[c++]);
+    draw_rectangle(0, x + 26, 460, 16, 10, WHITE);
   }
 }

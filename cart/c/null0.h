@@ -357,69 +357,220 @@ NULL0_EXPORT("keyDown")
 void keyDown(Key key);
 
 
-// UTILITIES
+// DRAW: IMAGE
 
-// max-size for trace messages
-#ifndef NULL0_TRACE_SIZE
-#define NULL0_TRACE_SIZE 1024 * 1024 * 1024
-#endif
+// Create a new blank image
+NULL0_IMPORT("image_new")
+u32 image_new(i32 width, i32 height, Color color);
 
-NULL0_IMPORT("trace")
-void _null0_trace_real(char *str);
+// Unload an image
+NULL0_IMPORT("image_unload")
+void image_unload(u32 image);
 
-char null0_traceBuffer[NULL0_TRACE_SIZE];
+// Meaure an image (use 0 for screen)
+NULL0_IMPORT("image_measure")
+Dimensions image_measure(u32 image);
 
-// Log a string
-void trace(const char *format, ...) {
-  va_list args;
-  va_start(args, format);
-  vsnprintf(null0_traceBuffer, NULL0_TRACE_SIZE, format, args);
-  va_end(args);
-  _null0_trace_real(null0_traceBuffer);
-}
+// Copy an image to a new image
+NULL0_IMPORT("image_copy")
+u32 image_copy(u32 image);
 
-// Get system-time (ms) since unix epoch
-NULL0_IMPORT("current_time")
-u64 current_time();
+// Create an image from a region of another image
+NULL0_IMPORT("subimage")
+u32 subimage(u32 image, i32 x, i32 y, i32 width, i32 height);
 
-// Get the change in time (seconds) since the last update run
-NULL0_IMPORT("delta_time")
-f32 delta_time();
+// Save an image to persistant storage
+NULL0_IMPORT("image_save")
+void image_save(u32 image, char* filename);
 
-// Get a random integer between 2 numbers
-NULL0_IMPORT("random_int")
-i32 random_int(i32 min, i32 max);
+// Load an image from a file in cart
+NULL0_IMPORT("image_load")
+u32 image_load(char* filename);
+
+// Draw an image on an image
+NULL0_IMPORT("draw_image")
+void draw_image(u32 destination, u32 src, i32 posX, i32 posY);
+
+// Draw a tinted image on an image
+NULL0_IMPORT("draw_image_tint")
+void draw_image_tint(u32 destination, u32 src, i32 posX, i32 posY, Color tint);
+
+// Draw an image, rotated, on an image
+NULL0_IMPORT("draw_image_rotated")
+void draw_image_rotated(u32 destination, u32 src, i32 posX, i32 posY, f32 degrees, f32 offsetX, f32 offsetY, ImageFilter filter);
+
+// Draw an image, flipped, on an image
+NULL0_IMPORT("draw_image_flipped")
+void draw_image_flipped(u32 destination, u32 src, i32 posX, i32 posY, bool flipHorizontal, bool flipVertical, bool flipDiagonal);
+
+// Draw an image, scaled, on an image
+NULL0_IMPORT("draw_image_scaled")
+void draw_image_scaled(u32 destination, u32 src, i32 posX, i32 posY, f32 scaleX, f32 scaleY, f32 offsetX, f32 offsetY, ImageFilter filter);
+
+// Resize an image, in-place
+NULL0_IMPORT("image_resize")
+void image_resize(u32 image, i32 newWidth, i32 newHeight, i32 offsetX, i32 offsetY, Color fill);
+
+// Scale an image, in-place
+NULL0_IMPORT("image_scale")
+void image_scale(u32 image, f32 scaleX, f32 scaleY, ImageFilter filter);
+
+// Replace a color in an image, in-place
+NULL0_IMPORT("image_color_replace")
+void image_color_replace(u32 image, Color color, Color replace);
+
+// Tint a color in an image, in-place
+NULL0_IMPORT("image_color_tint")
+void image_color_tint(u32 image, Color color);
+
+// Fade a color in an image, in-place
+NULL0_IMPORT("image_color_fade")
+void image_color_fade(u32 image, f32 alpha);
+
+// Invert the colors in an image, in-place
+NULL0_IMPORT("image_color_invert")
+void image_color_invert(u32 image);
+
+// Crop an image, in-place
+NULL0_IMPORT("image_crop")
+void image_crop(u32 image, i32 x, i32 y, i32 width, i32 height);
+
+// Adjust the brightness of an image, in-place
+NULL0_IMPORT("image_color_brightness")
+void image_color_brightness(u32 image, f32 factor);
+
+// Flip an image, in-place
+NULL0_IMPORT("image_flip")
+void image_flip(u32 image, bool horizontal, bool vertical);
+
+// Change the contrast of an image, in-place
+NULL0_IMPORT("image_color_contrast")
+void image_color_contrast(u32 image, f32 contrast);
+
+// Use an image as an alpha-mask on another image
+NULL0_IMPORT("image_alpha_mask")
+void image_alpha_mask(u32 image, u32 alphaMask, i32 posX, i32 posY);
+
+// Create a new image, rotating another image
+NULL0_IMPORT("image_rotate")
+u32 image_rotate(u32 image, f32 degrees, ImageFilter filter);
+
+// Create a new image of a gradient
+NULL0_IMPORT("image_gradient")
+u32 image_gradient(i32 width, i32 height, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
 
 
-// SOUND
+// DRAW: PATH
 
-// Load a sound from a file in cart
-NULL0_IMPORT("load_sound")
-u32 load_sound(char* filename);
+// Start a path
+NULL0_IMPORT("path_start")
+u32 path_start(u32 image);
 
-// Play a sound
-NULL0_IMPORT("play_sound")
-void play_sound(u32 sound, bool loop);
+// End a path
+NULL0_IMPORT("path_end")
+void path_end(u32 path);
 
-// Stop a sound
-NULL0_IMPORT("stop_sound")
-void stop_sound(u32 sound);
+// Draw a line to new position
+NULL0_IMPORT("line_to")
+void line_to(u32 path, i32 x, i32 y);
 
-// Unload a sound
-NULL0_IMPORT("unload_sound")
-void unload_sound(u32 sound);
+// Draw a curved line to new position
+NULL0_IMPORT("curve_to")
+void curve_to(u32 path, i32 x, i32 y, f32 radius);
 
-// Generate randomized preset sfxr params
-NULL0_IMPORT("preset_sfx")
-SfxParams preset_sfx(SfxPresetType type);
+// Move new position path to this position withou drawing
+NULL0_IMPORT("move_to")
+void move_to(u32 path, i32 x, i32 y);
 
-// Create a new sfxr from a .rfx file
-NULL0_IMPORT("load_sfx")
-SfxParams load_sfx(char* filename);
+// Fill current path with a color
+NULL0_IMPORT("fill")
+void fill(u32 path, Color color);
 
-// Convert SfxParams to a sound
-NULL0_IMPORT("sfx_to_sound")
-u32 sfx_to_sound(SfxParams input);
+// stroke current path with line
+NULL0_IMPORT("stroke")
+void stroke(u32 path, u32 thickness);
+
+
+// DRAW: SHAPES
+
+// Clear an image
+NULL0_IMPORT("clear")
+void clear(u32 destination, Color color);
+
+// Draw a single pixel on an image
+NULL0_IMPORT("draw_point")
+void draw_point(u32 destination, i32 x, i32 y, Color color);
+
+// Draw a line on an image
+NULL0_IMPORT("draw_line")
+void draw_line(u32 destination, i32 startPosX, i32 startPosY, i32 endPosX, i32 endPosY, u32 thickness, Color color);
+
+// Draw a filled rectangle on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_rectangle")
+void draw_rectangle(u32 destination, i32 posX, i32 posY, i32 width, i32 height, u32 thickness, Color color);
+
+// Draw a filled triangle on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_triangle")
+void draw_triangle(u32 destination, i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, u32 thickness, Color color);
+
+// Draw a filled ellipse on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_ellipse")
+void draw_ellipse(u32 destination, i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, u32 thickness, Color color);
+
+// Draw a circle on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_circle")
+void draw_circle(u32 destination, i32 centerX, i32 centerY, i32 radius, u32 thickness, Color color);
+
+// Draw an arc on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_arc")
+void draw_arc(u32 destination, i32 centerX, i32 centerY, f32 radius, f32 startAngle, f32 endAngle, i32 segments, u32 thickness, Color color);
+
+// Draw a filled round-rectangle on an image. Set thickness to 0 for "fill".
+NULL0_IMPORT("draw_rectangle_rounded")
+void draw_rectangle_rounded(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, u32 thickness, Color color);
+
+// Draw some text on an image
+NULL0_IMPORT("draw_text")
+void draw_text(u32 destination, u32 font, char* text, i32 posX, i32 posY, Color color);
+
+
+// FONTS
+
+// Copy a font to a new font
+NULL0_IMPORT("font_copy")
+u32 font_copy(u32 font);
+
+// Scale a font, return a new font
+NULL0_IMPORT("font_scale")
+u32 font_scale(u32 font, f32 scaleX, f32 scaleY, ImageFilter filter);
+
+// Measure the size of some text
+NULL0_IMPORT("text_measure")
+Dimensions text_measure(u32 font, char* text);
+
+// Unload a font
+NULL0_IMPORT("font_unload")
+void font_unload(u32 font);
+
+// Load a BMF font from a file in cart
+NULL0_IMPORT("font_load_bmf")
+u32 font_load_bmf(char* filename, char* characters);
+
+// Load a BMF font from an image
+NULL0_IMPORT("font_load_bmf_from_image")
+u32 font_load_bmf_from_image(u32 image, char* characters);
+
+// Load a TTY font from a file in cart
+NULL0_IMPORT("font_load_tty")
+u32 font_load_tty(char* filename, i32 glyphWidth, i32 glyphHeight, char* characters);
+
+// Load a TTY font from an image
+NULL0_IMPORT("font_load_tty_from_image")
+u32 font_load_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char* characters);
+
+// Load a TTF font from a file in cart
+NULL0_IMPORT("font_load_ttf")
+u32 font_load_ttf(char* filename, i32 fontSize);
 
 
 // INPUT
@@ -473,345 +624,38 @@ NULL0_IMPORT("mouse_button_up")
 bool mouse_button_up(MouseButton button);
 
 
-// GRAPHICS
+// SOUND
 
-// Create a new blank image
-NULL0_IMPORT("new_image")
-u32 new_image(i32 width, i32 height, Color color);
+// Load a sound from a file in cart
+NULL0_IMPORT("sound_load")
+u32 sound_load(char* filename);
 
-// Copy an image to a new image
-NULL0_IMPORT("image_copy")
-u32 image_copy(u32 image);
+// Play a sound
+NULL0_IMPORT("sound_play")
+void sound_play(u32 sound, bool loop);
 
-// Create an image from a region of another image
-NULL0_IMPORT("image_subimage")
-u32 image_subimage(u32 image, i32 x, i32 y, i32 width, i32 height);
+// Stop a sound
+NULL0_IMPORT("sound_stop")
+void sound_stop(u32 sound);
 
-// Clear the screen
-NULL0_IMPORT("clear")
-void clear(Color color);
+// Unload a sound
+NULL0_IMPORT("sound_unload")
+void sound_unload(u32 sound);
 
-// Draw a single pixel on the screen
-NULL0_IMPORT("draw_point")
-void draw_point(i32 x, i32 y, Color color);
+// Generate randomized preset sfxr params
+NULL0_IMPORT("sfx_preset")
+SfxParams sfx_preset(SfxPresetType type);
 
-// Draw a line on the screen
-NULL0_IMPORT("draw_line")
-void draw_line(i32 startPosX, i32 startPosY, i32 endPosX, i32 endPosY, Color color);
+// Create a new sfxr from a .rfx file
+NULL0_IMPORT("sfx_load")
+SfxParams sfx_load(char* filename);
 
-// Draw a filled rectangle on the screen
-NULL0_IMPORT("draw_rectangle")
-void draw_rectangle(i32 posX, i32 posY, i32 width, i32 height, Color color);
+// Convert SfxParams to a sound
+NULL0_IMPORT("sfx_to_sound")
+u32 sfx_to_sound(SfxParams input);
 
-// Draw a filled triangle on the screen
-NULL0_IMPORT("draw_triangle")
-void draw_triangle(i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, Color color);
 
-// Draw a filled ellipse on the screen
-NULL0_IMPORT("draw_ellipse")
-void draw_ellipse(i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, Color color);
-
-// Draw a filled circle on the screen
-NULL0_IMPORT("draw_circle")
-void draw_circle(i32 centerX, i32 centerY, i32 radius, Color color);
-
-// Draw a filled polygon on the screen
-NULL0_IMPORT("draw_polygon")
-void draw_polygon(Vector* points, i32 numPoints, Color color);
-
-// Draw several lines on the screen
-NULL0_IMPORT("draw_polyline")
-void draw_polyline(Vector* points, i32 numPoints, Color color);
-
-// Draw a filled arc on the screen
-NULL0_IMPORT("draw_arc")
-void draw_arc(i32 centerX, i32 centerY, f32 radius, f32 startAngle, f32 endAngle, i32 segments, Color color);
-
-// Draw a filled round-rectangle on the screen
-NULL0_IMPORT("draw_rectangle_rounded")
-void draw_rectangle_rounded(i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, Color color);
-
-// Draw an image on the screen
-NULL0_IMPORT("draw_image")
-void draw_image(u32 src, i32 posX, i32 posY);
-
-// Draw a tinted image on the screen
-NULL0_IMPORT("draw_image_tint")
-void draw_image_tint(u32 src, i32 posX, i32 posY, Color tint);
-
-// Draw an image, rotated, on the screen
-NULL0_IMPORT("draw_image_rotated")
-void draw_image_rotated(u32 src, i32 posX, i32 posY, f32 degrees, f32 offsetX, f32 offsetY, ImageFilter filter);
-
-// Draw an image, flipped, on the screen
-NULL0_IMPORT("draw_image_flipped")
-void draw_image_flipped(u32 src, i32 posX, i32 posY, bool flipHorizontal, bool flipVertical, bool flipDiagonal);
-
-// Draw an image, scaled, on the screen
-NULL0_IMPORT("draw_image_scaled")
-void draw_image_scaled(u32 src, i32 posX, i32 posY, f32 scaleX, f32 scaleY, f32 offsetX, f32 offsetY, ImageFilter filter);
-
-// Draw some text on the screen
-NULL0_IMPORT("draw_text")
-void draw_text(u32 font, char* text, i32 posX, i32 posY, Color color);
-
-// Save an image to persistant storage
-NULL0_IMPORT("save_image")
-void save_image(u32 image, char* filename);
-
-// Load an image from a file in cart
-NULL0_IMPORT("load_image")
-u32 load_image(char* filename);
-
-// Resize an image, in-place
-NULL0_IMPORT("image_resize")
-void image_resize(u32 image, i32 newWidth, i32 newHeight, i32 offsetX, i32 offsetY, Color fill);
-
-// Scale an image, in-place
-NULL0_IMPORT("image_scale")
-void image_scale(u32 image, f32 scaleX, f32 scaleY, ImageFilter filter);
-
-// Replace a color in an image, in-place
-NULL0_IMPORT("image_color_replace")
-void image_color_replace(u32 image, Color color, Color replace);
-
-// Tint a color in an image, in-place
-NULL0_IMPORT("image_color_tint")
-void image_color_tint(u32 image, Color color);
-
-// Fade a color in an image, in-place
-NULL0_IMPORT("image_color_fade")
-void image_color_fade(u32 image, f32 alpha);
-
-// Copy a font to a new font
-NULL0_IMPORT("font_copy")
-u32 font_copy(u32 font);
-
-// Scale a font, return a new font
-NULL0_IMPORT("font_scale")
-u32 font_scale(u32 font, f32 scaleX, f32 scaleY, ImageFilter filter);
-
-// Load a BMF font from a file in cart
-NULL0_IMPORT("load_font_bmf")
-u32 load_font_bmf(char* filename, char* characters);
-
-// Load a BMF font from an image
-NULL0_IMPORT("load_font_bmf_from_image")
-u32 load_font_bmf_from_image(u32 image, char* characters);
-
-// Measure the size of some text
-NULL0_IMPORT("measure_text")
-Dimensions measure_text(u32 font, char* text);
-
-// Meaure an image (use 0 for screen)
-NULL0_IMPORT("measure_image")
-Dimensions measure_image(u32 image);
-
-// Load a TTY font from a file in cart
-NULL0_IMPORT("load_font_tty")
-u32 load_font_tty(char* filename, i32 glyphWidth, i32 glyphHeight, char* characters);
-
-// Load a TTY font from an image
-NULL0_IMPORT("load_font_tty_from_image")
-u32 load_font_tty_from_image(u32 image, i32 glyphWidth, i32 glyphHeight, char* characters);
-
-// Load a TTF font from a file in cart
-NULL0_IMPORT("load_font_ttf")
-u32 load_font_ttf(char* filename, i32 fontSize);
-
-// Invert the colors in an image, in-place
-NULL0_IMPORT("image_color_invert")
-void image_color_invert(u32 image);
-
-// Calculate a rectangle representing the available alpha border in an image
-NULL0_IMPORT("image_alpha_border")
-Rectangle image_alpha_border(u32 image, f32 threshold);
-
-// Crop an image, in-place
-NULL0_IMPORT("image_crop")
-void image_crop(u32 image, i32 x, i32 y, i32 width, i32 height);
-
-// Crop an image based on the alpha border, in-place
-NULL0_IMPORT("image_alpha_crop")
-void image_alpha_crop(u32 image, f32 threshold);
-
-// Adjust the brightness of an image, in-place
-NULL0_IMPORT("image_color_brightness")
-void image_color_brightness(u32 image, f32 factor);
-
-// Flip an image, in-place
-NULL0_IMPORT("image_flip")
-void image_flip(u32 image, bool horizontal, bool vertical);
-
-// Change the contrast of an image, in-place
-NULL0_IMPORT("image_color_contrast")
-void image_color_contrast(u32 image, f32 contrast);
-
-// Use an image as an alpha-mask on another image
-NULL0_IMPORT("image_alpha_mask")
-void image_alpha_mask(u32 image, u32 alphaMask, i32 posX, i32 posY);
-
-// Create a new image, rotating another image
-NULL0_IMPORT("image_rotate")
-u32 image_rotate(u32 image, f32 degrees, ImageFilter filter);
-
-// Create a new image of a gradient
-NULL0_IMPORT("image_gradient")
-u32 image_gradient(i32 width, i32 height, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
-
-// Unload an image
-NULL0_IMPORT("unload_image")
-void unload_image(u32 image);
-
-// Unload a font
-NULL0_IMPORT("unload_font")
-void unload_font(u32 font);
-
-// Clear an image
-NULL0_IMPORT("clear_on_image")
-void clear_on_image(u32 destination, Color color);
-
-// Draw a single pixel on an image
-NULL0_IMPORT("draw_point_on_image")
-void draw_point_on_image(u32 destination, i32 x, i32 y, Color color);
-
-// Draw a line on an image
-NULL0_IMPORT("draw_line_on_image")
-void draw_line_on_image(u32 destination, i32 startPosX, i32 startPosY, i32 endPosX, i32 endPosY, Color color);
-
-// Draw a filled rectangle on an image
-NULL0_IMPORT("draw_rectangle_on_image")
-void draw_rectangle_on_image(u32 destination, i32 posX, i32 posY, i32 width, i32 height, Color color);
-
-// Draw a filled triangle on an image
-NULL0_IMPORT("draw_triangle_on_image")
-void draw_triangle_on_image(u32 destination, i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, Color color);
-
-// Draw a filled ellipse on an image
-NULL0_IMPORT("draw_ellipse_on_image")
-void draw_ellipse_on_image(u32 destination, i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, Color color);
-
-// Draw a circle on an image
-NULL0_IMPORT("draw_circle_on_image")
-void draw_circle_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius, Color color);
-
-// Draw a filled polygon on an image
-NULL0_IMPORT("draw_polygon_on_image")
-void draw_polygon_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
-
-// Draw several lines on an image
-NULL0_IMPORT("draw_polyline_on_image")
-void draw_polyline_on_image(u32 destination, Vector* points, i32 numPoints, Color color);
-
-// Draw a filled round-rectangle on an image
-NULL0_IMPORT("draw_rectangle_rounded_on_image")
-void draw_rectangle_rounded_on_image(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, Color color);
-
-// Draw an image on an image
-NULL0_IMPORT("draw_image_on_image")
-void draw_image_on_image(u32 destination, u32 src, i32 posX, i32 posY);
-
-// Draw a tinted image on an image
-NULL0_IMPORT("draw_image_tint_on_image")
-void draw_image_tint_on_image(u32 destination, u32 src, i32 posX, i32 posY, Color tint);
-
-// Draw an image, rotated, on an image
-NULL0_IMPORT("draw_image_rotated_on_image")
-void draw_image_rotated_on_image(u32 destination, u32 src, i32 posX, i32 posY, f32 degrees, f32 offsetX, f32 offsetY, ImageFilter filter);
-
-// Draw an image, flipped, on an image
-NULL0_IMPORT("draw_image_flipped_on_image")
-void draw_image_flipped_on_image(u32 destination, u32 src, i32 posX, i32 posY, bool flipHorizontal, bool flipVertical, bool flipDiagonal);
-
-// Draw an image, scaled, on an image
-NULL0_IMPORT("draw_image_scaled_on_image")
-void draw_image_scaled_on_image(u32 destination, u32 src, i32 posX, i32 posY, f32 scaleX, f32 scaleY, f32 offsetX, f32 offsetY, ImageFilter filter);
-
-// Draw some text on an image
-NULL0_IMPORT("draw_text_on_image")
-void draw_text_on_image(u32 destination, u32 font, char* text, i32 posX, i32 posY, Color color);
-
-// Draw a 1px outlined rectangle on the screen
-NULL0_IMPORT("draw_rectangle_outline")
-void draw_rectangle_outline(i32 posX, i32 posY, i32 width, i32 height, i32 thickness, Color color);
-
-// Draw a 1px outlined triangle on the screen
-NULL0_IMPORT("draw_triangle_outline")
-void draw_triangle_outline(i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, i32 thickness, Color color);
-
-// Draw a 1px outlined ellipse on the screen
-NULL0_IMPORT("draw_ellipse_outline")
-void draw_ellipse_outline(i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, i32 thickness, Color color);
-
-// Draw a 1px outlined circle on the screen
-NULL0_IMPORT("draw_circle_outline")
-void draw_circle_outline(i32 centerX, i32 centerY, i32 radius, i32 thickness, Color color);
-
-// Draw a 1px outlined polygon on the screen
-NULL0_IMPORT("draw_polygon_outline")
-void draw_polygon_outline(Vector* points, i32 numPoints, i32 thickness, Color color);
-
-// Draw a 1px outlined arc on the screen
-NULL0_IMPORT("draw_arc_outline")
-void draw_arc_outline(i32 centerX, i32 centerY, f32 radius, f32 startAngle, f32 endAngle, i32 segments, i32 thickness, Color color);
-
-// Draw a 1px outlined round-rectangle on the screen
-NULL0_IMPORT("draw_rectangle_rounded_outline")
-void draw_rectangle_rounded_outline(i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, i32 thickness, Color color);
-
-// Draw a 1px outlined rectangle on an image
-NULL0_IMPORT("draw_rectangle_outline_on_image")
-void draw_rectangle_outline_on_image(u32 destination, i32 posX, i32 posY, i32 width, i32 height, i32 thickness, Color color);
-
-// Draw a 1px outlined triangle on an image
-NULL0_IMPORT("draw_triangle_outline_on_image")
-void draw_triangle_outline_on_image(u32 destination, i32 x1, i32 y1, i32 x2, i32 y2, i32 x3, i32 y3, i32 thickness, Color color);
-
-// Draw a 1px outlined ellipse on an image
-NULL0_IMPORT("draw_ellipse_outline_on_image")
-void draw_ellipse_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radiusX, i32 radiusY, i32 thickness, Color color);
-
-// Draw a 1px outlined circle on an image
-NULL0_IMPORT("draw_circle_outline_on_image")
-void draw_circle_outline_on_image(u32 destination, i32 centerX, i32 centerY, i32 radius, i32 thickness, Color color);
-
-// Draw a 1px outlined polygon on an image
-NULL0_IMPORT("draw_polygon_outline_on_image")
-void draw_polygon_outline_on_image(u32 destination, Vector* points, i32 numPoints, i32 thickness, Color color);
-
-// Draw a 1px outlined round-rectangle on an image
-NULL0_IMPORT("draw_rectangle_rounded_outline_on_image")
-void draw_rectangle_rounded_outline_on_image(u32 destination, i32 x, i32 y, i32 width, i32 height, i32 cornerRadius, i32 thickness, Color color);
-
-
-// FILESYSTEM
-
-// Read a file from cart (or local persistant)
-NULL0_IMPORT("file_read")
-u8* file_read(char* filename, u32* bytesRead);
-
-// Write a file to persistant storage
-NULL0_IMPORT("file_write")
-bool file_write(char* filename, u8* data, u32 byteSize);
-
-// Write a file to persistant storage, appending to the end
-NULL0_IMPORT("file_append")
-bool file_append(char* filename, u8* data, u32 byteSize);
-
-// Get info about a single file
-NULL0_IMPORT("file_info")
-FileInfo file_info(char* filename);
-
-// Get list of files in a directory
-NULL0_IMPORT("file_list")
-char** file_list(char* dir);
-
-// Get the user's writable dir (where file writes or appends go)
-NULL0_IMPORT("get_write_dir")
-char* get_write_dir();
-
-
-// COLORS
+// UTILS: COLORS
 
 // Tint a color with another color
 NULL0_IMPORT("color_tint")
@@ -840,4 +684,65 @@ Color color_contrast(Color color, f32 contrast);
 // Interpolate colors
 NULL0_IMPORT("color_bilinear_interpolate")
 Color color_bilinear_interpolate(Color color00, Color color01, Color color10, Color color11, f32 coordinateX, f32 coordinateY);
+
+
+// UTILS: FILESYSTEM
+
+// Read a file from cart (or local persistant)
+NULL0_IMPORT("file_read")
+u8* file_read(char* filename, u32* bytesRead);
+
+// Write a file to persistant storage
+NULL0_IMPORT("file_write")
+bool file_write(char* filename, u8* data, u32 byteSize);
+
+// Write a file to persistant storage, appending to the end
+NULL0_IMPORT("file_append")
+bool file_append(char* filename, u8* data, u32 byteSize);
+
+// Get info about a single file
+NULL0_IMPORT("file_info")
+FileInfo file_info(char* filename);
+
+// Get list of files in a directory
+NULL0_IMPORT("file_list")
+char** file_list(char* dir);
+
+// Get the user's writable dir (where file writes or appends go)
+NULL0_IMPORT("get_write_dir")
+char* get_write_dir();
+
+
+// UTILS: GENERAL
+
+// max-size for trace messages
+#ifndef NULL0_TRACE_SIZE
+#define NULL0_TRACE_SIZE 1024 * 1024 * 1024
+#endif
+
+NULL0_IMPORT("trace")
+void _null0_trace_real(char *str);
+
+char null0_traceBuffer[NULL0_TRACE_SIZE];
+
+// Log a string
+void trace(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  vsnprintf(null0_traceBuffer, NULL0_TRACE_SIZE, format, args);
+  va_end(args);
+  _null0_trace_real(null0_traceBuffer);
+}
+
+// Get system-time (ms) since unix epoch
+NULL0_IMPORT("current_time")
+u64 current_time();
+
+// Get the change in time (seconds) since the last update run
+NULL0_IMPORT("delta_time")
+f32 delta_time();
+
+// Get a random integer between 2 numbers
+NULL0_IMPORT("random_int")
+i32 random_int(i32 min, i32 max);
 

@@ -384,7 +384,7 @@ NULL0_EXPORT("keyDown")
 void keyDown(Key key);
 `)
 
-for (const filename of await glob('api/**/*.yml')) {
+for (const filename of (await glob('api/**/*.yml')).sort()) {
   const api = YAML.parse(await readFile(filename, 'utf8'))
   const apiName = basename(filename, '.yml')
   out.push('', `// ${apiName.toUpperCase().replace('_', ': ')}`, '')

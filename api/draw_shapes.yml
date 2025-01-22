@@ -89,7 +89,6 @@ draw_arc:
   returns: void
   description: Draw an arc on an image. Set thickness to 0 for "fill".
 
-
 draw_rectangle_rounded:
   args:
     destination: Image

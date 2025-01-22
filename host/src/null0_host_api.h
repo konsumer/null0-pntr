@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-22T11:46:32.966Z
+// it was generated on 2025-01-22T12:05:17.410Z
 
 #pragma once
 
@@ -335,7 +335,7 @@ HOST_FUNCTION(void, draw_text, (uint32_t destinationPtr, uint32_t fontPtr, uint3
 })
 
 
-// DRAW: TEXT
+// FONTS
 
 // Copy a font to a new font
 HOST_FUNCTION(uint32_t, font_copy, (uint32_t fontPtr), {

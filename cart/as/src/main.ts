@@ -15,7 +15,7 @@ export function load(): void {
 
 // called on every frame
 export function update(): void {
-  clear(BLACK)
-  draw_text(0, "Hello from null0", x+1, y+1, BLUE)
-  draw_text(0, "Hello from null0", x, y, RED)
+  clear(0, BLACK)
+  draw_text(0, 0, "Hello from null0", x+1, y+1, BLUE)
+  draw_text(0, 0, "Hello from null0", x, y, RED)
 }

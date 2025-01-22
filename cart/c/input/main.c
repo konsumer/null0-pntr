@@ -30,19 +30,19 @@ u32 bg;
 int main() {
   trace("Hello from input.");
 
-  images[0] = load_image("assets/bg.png");
-  images[1] = load_image("assets/up.png");
-  images[2] = load_image("assets/right.png");
-  images[3] = load_image("assets/down.png");
-  images[4] = load_image("assets/left.png");
-  images[5] = load_image("assets/y.png");
-  images[6] = load_image("assets/b.png");
-  images[7] = load_image("assets/a.png");
-  images[8] = load_image("assets/x.png");
-  images[9] = load_image("assets/l1.png");
-  images[11] = load_image("assets/r1.png");
-  images[13] = load_image("assets/select.png");
-  images[15] = load_image("assets/start.png");
+  images[0] = image_load("assets/bg.png");
+  images[1] = image_load("assets/up.png");
+  images[2] = image_load("assets/right.png");
+  images[3] = image_load("assets/down.png");
+  images[4] = image_load("assets/left.png");
+  images[5] = image_load("assets/y.png");
+  images[6] = image_load("assets/b.png");
+  images[7] = image_load("assets/a.png");
+  images[8] = image_load("assets/x.png");
+  images[9] = image_load("assets/l1.png");
+  images[11] = image_load("assets/r1.png");
+  images[13] = image_load("assets/select.png");
+  images[15] = image_load("assets/start.png");
 
   bg = image_gradient(320, 240, BLUE, BLUE, GREEN, GREEN);
 
@@ -58,12 +58,12 @@ void buttonUp(GamepadButton button) {
 }
 
 void update(float deltaTime) {
-  draw_image(bg, 0, 0);
-  draw_image(images[0], 0, 47);
+  draw_image(0, bg, 0, 0);
+  draw_image(0, images[0], 0, 47);
 
   for (int i = 1; i < 16; i++) {
     if (buttons[i]) {
-      draw_image(images[i], 0, 0);
+      draw_image(0, images[i], 0, 0);
     }
   }
 }
