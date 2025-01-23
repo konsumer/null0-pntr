@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-23T07:14:13.305Z
+// it was generated on 2025-01-23T09:19:59.138Z
 
 #pragma once
 
@@ -164,15 +164,13 @@ HOST_FUNCTION(void, image_scale, (uint32_t imagePtr, float scaleX, float scaleY,
 // Unload an image
 HOST_FUNCTION(void, image_unload, (uint32_t imagePtr), {
   pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called image_unload");
+  pntr_unload_image(image);
 })
 
 // Create an image from a region of another image
 HOST_FUNCTION(uint32_t, subimage, (uint32_t imagePtr, int32_t x, int32_t y, int32_t width, int32_t height), {
   pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called subimage");
+  return cart_create_image(appData, pntr_image_subimage(image, x, y, width, height));
 })
 
 
@@ -236,8 +234,7 @@ HOST_FUNCTION(void, stroke, (uint32_t pathPtr, uint32_t thickness, uint32_t colo
 HOST_FUNCTION(void, clear, (uint32_t destinationPtr, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called clear");
+  pntr_clear_background(destination, color);
 })
 
 // Draw an arc on an image. Set thickness to 0 for "fill".
@@ -302,8 +299,7 @@ HOST_FUNCTION(void, draw_text, (uint32_t destinationPtr, uint32_t fontPtr, uint3
   pntr_font* font = appData->fonts[fontPtr];
   char* text = copy_from_cart_string(textPtr);
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_text");
+  pntr_draw_text(destination, font, text, posX, posY, color);
 })
 
 // Draw a filled triangle on an image. Set thickness to 0 for "fill".
@@ -320,69 +316,61 @@ HOST_FUNCTION(void, draw_triangle, (uint32_t destinationPtr, int32_t x1, int32_t
 // Copy a font to a new font
 HOST_FUNCTION(uint32_t, font_copy, (uint32_t fontPtr), {
   pntr_font* font = appData->fonts[fontPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_copy");
+  return cart_create_font(appData, pntr_font_copy(font));
 })
 
 // Load a BMF font from a file in cart
 HOST_FUNCTION(uint32_t, font_load_bmf, (uint32_t filenamePtr, uint32_t charactersPtr), {
   char* filename = copy_from_cart_string(filenamePtr);
   char* characters = copy_from_cart_string(charactersPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_load_bmf");
+  return cart_create_font(appData, pntr_load_font_bmf(filename, characters));
 })
 
 // Load a BMF font from an image
 HOST_FUNCTION(uint32_t, font_load_bmf_from_image, (uint32_t imagePtr, uint32_t charactersPtr), {
   pntr_image* image = appData->images[imagePtr];
   char* characters = copy_from_cart_string(charactersPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_load_bmf_from_image");
+  return cart_create_font(appData, pntr_load_font_bmf_from_image(image, characters));
 })
 
 // Load a TTF font from a file in cart
 HOST_FUNCTION(uint32_t, font_load_ttf, (uint32_t filenamePtr, int32_t fontSize), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_load_ttf");
+  return cart_create_font(appData, pntr_load_font_ttf(filename, fontSize));
 })
 
 // Load a TTY font from a file in cart
 HOST_FUNCTION(uint32_t, font_load_tty, (uint32_t filenamePtr, int32_t glyphWidth, int32_t glyphHeight, uint32_t charactersPtr), {
   char* filename = copy_from_cart_string(filenamePtr);
   char* characters = copy_from_cart_string(charactersPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_load_tty");
+  return cart_create_font(appData, pntr_load_font_tty(filename, glyphWidth, glyphHeight, characters));
 })
 
 // Load a TTY font from an image
 HOST_FUNCTION(uint32_t, font_load_tty_from_image, (uint32_t imagePtr, int32_t glyphWidth, int32_t glyphHeight, uint32_t charactersPtr), {
   pntr_image* image = appData->images[imagePtr];
   char* characters = copy_from_cart_string(charactersPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_load_tty_from_image");
+  return cart_create_font(appData, pntr_load_font_tty_from_image(image, glyphWidth, glyphHeight, characters));
 })
 
 // Scale a font, return a new font
 HOST_FUNCTION(uint32_t, font_scale, (uint32_t fontPtr, float scaleX, float scaleY, uint32_t filter), {
   pntr_font* font = appData->fonts[fontPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_scale");
+  return cart_create_font(appData, pntr_font_scale(font, scaleX, scaleY, filter));
 })
 
 // Unload a font
 HOST_FUNCTION(void, font_unload, (uint32_t fontPtr), {
   pntr_font* font = appData->fonts[fontPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called font_unload");
+  pntr_unload_font(font);
 })
 
 // Measure the size of some text
 HOST_FUNCTION(uint32_t, text_measure, (uint32_t fontPtr, uint32_t textPtr), {
   pntr_font* font = appData->fonts[fontPtr];
   char* text = copy_from_cart_string(textPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called text_measure");
+  pntr_vector dim = pntr_measure_text_ex(font, text, strlen(text));
+  return copy_to_cart(&dim, sizeof(dim));
 })
 
 
@@ -390,74 +378,63 @@ HOST_FUNCTION(uint32_t, text_measure, (uint32_t fontPtr, uint32_t textPtr), {
 
 // Is the button currently down?
 HOST_FUNCTION(bool, gamepad_button_down, (int32_t gamepad, uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called gamepad_button_down");
+  return pntr_app_gamepad_button_down(appData->app, gamepad, button);
 })
 
 // Has the button been pressed? (tracks unpress/read correctly)
 HOST_FUNCTION(bool, gamepad_button_pressed, (int32_t gamepad, uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called gamepad_button_pressed");
+  return pntr_app_gamepad_button_pressed(appData->app, gamepad, button);
 })
 
 // Has the button been released? (tracks press/read correctly)
 HOST_FUNCTION(bool, gamepad_button_released, (int32_t gamepad, uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called gamepad_button_released");
+  return pntr_app_gamepad_button_released(appData->app, gamepad, button);
 })
 
 // Is the key currently down?
 HOST_FUNCTION(bool, key_down, (uint32_t key), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called key_down");
+  return pntr_app_key_down(appData->app, key);
 })
 
 // Has the key been pressed? (tracks unpress/read correctly)
 HOST_FUNCTION(bool, key_pressed, (uint32_t key), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called key_pressed");
+  return pntr_app_key_pressed(appData->app, key);
 })
 
 // Has the key been released? (tracks press/read correctly)
 HOST_FUNCTION(bool, key_released, (uint32_t key), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called key_released");
+  return pntr_app_key_released(appData->app, key);
 })
 
 // Is the key currently up?
 HOST_FUNCTION(bool, key_up, (uint32_t key), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called key_up");
+  return pntr_app_key_up(appData->app, key);
 })
 
 // Is the button currently down?
 HOST_FUNCTION(bool, mouse_button_down, (uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called mouse_button_down");
+  return pntr_app_mouse_button_down(appData->app, button);
 })
 
 // Has the button been pressed? (tracks unpress/read correctly)
 HOST_FUNCTION(bool, mouse_button_pressed, (uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called mouse_button_pressed");
+  return pntr_app_mouse_button_pressed(appData->app, button);
 })
 
 // Has the button been released? (tracks press/read correctly)
 HOST_FUNCTION(bool, mouse_button_released, (uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called mouse_button_released");
+  return pntr_app_mouse_button_released(appData->app, button);
 })
 
 // Is the button currently up?
 HOST_FUNCTION(bool, mouse_button_up, (uint32_t button), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called mouse_button_up");
+  return pntr_app_mouse_button_up(appData->app, button);
 })
 
 // Get current position of mouse
 HOST_FUNCTION(uint32_t, mouse_position, (), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called mouse_position");
+  pntr_vector pos = (pntr_vector) { .x=pntr_app_mouse_x(appData->app), .y=pntr_app_mouse_y(appData->app) };
+  return copy_to_cart(&pos, sizeof(pos));
 })
 
 

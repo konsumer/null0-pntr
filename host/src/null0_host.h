@@ -108,6 +108,13 @@ uint32_t cart_create_image(AppData *appData, pntr_image* image) {
     return id;
 }
 
+// return ref-counter for font
+uint32_t cart_create_font(AppData *appData, pntr_font* font) {
+    uint32_t id = cvector_size(appData->fonts);
+    cvector_push_back(appData->fonts, font);
+    return id;
+}
+
 // load the host-specifc implementation
 #ifdef EMSCRIPTEN
 #include "null0_host_web.h"
