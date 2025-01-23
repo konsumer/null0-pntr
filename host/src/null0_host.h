@@ -101,6 +101,13 @@ pntr_color cart_color(uint32_t colorPtr) {
   return ret;
 }
 
+// return ref-counter for image
+uint32_t cart_create_image(AppData *appData, pntr_image* image) {
+    uint32_t id = cvector_size(appData->images);
+    cvector_push_back(appData->images, image);
+    return id;
+}
+
 // load the host-specifc implementation
 #ifdef EMSCRIPTEN
 #include "null0_host_web.h"

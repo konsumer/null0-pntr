@@ -5,7 +5,7 @@ import YAML from 'yaml'
 import { glob } from 'glob'
 import { basename } from 'node:path'
 
-function typemap (t) {
+function typemap(t) {
   if (t === 'string') {
     return 'char*'
   }
@@ -388,7 +388,9 @@ for (const filename of (await glob('api/**/*.yml')).sort()) {
   const api = YAML.parse(await readFile(filename, 'utf8'))
   const apiName = basename(filename, '.yml')
   out.push('', `// ${apiName.toUpperCase().replace('_', ': ')}`, '')
-  for (const [funcName, func] of Object.entries(api)) {
+
+  for (const funcName of Object.keys(api).sort()) {
+    const func = api[funcName]
     if (funcName === 'trace') {
       out.push(`// max-size for trace messages
 #ifndef NULL0_TRACE_SIZE
@@ -413,7 +415,11 @@ void trace(const char *format, ...) {
     }
     out.push(`// ${func.description}`)
     out.push(`NULL0_IMPORT("${funcName}")`)
-    out.push(`${typemap(func.returns)} ${funcName}(${Object.entries(func.args || {}).map(([name, type]) => `${typemap(type)} ${name}`).join(', ')});`)
+    out.push(
+      `${typemap(func.returns)} ${funcName}(${Object.entries(func.args || {})
+        .map(([name, type]) => `${typemap(type)} ${name}`)
+        .join(', ')});`
+    )
 
     out.push('')
   }
