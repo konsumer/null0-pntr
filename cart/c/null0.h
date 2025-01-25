@@ -447,10 +447,6 @@ u32 image_rotate(u32 image, f32 degrees, ImageFilter filter);
 NULL0_IMPORT("image_save")
 void image_save(u32 image, char* filename);
 
-// Scale an image, in-place
-NULL0_IMPORT("image_scale")
-void image_scale(u32 image, f32 scaleX, f32 scaleY, ImageFilter filter);
-
 // Unload an image
 NULL0_IMPORT("image_unload")
 void image_unload(u32 image);

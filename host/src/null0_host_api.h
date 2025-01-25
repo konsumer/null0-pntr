@@ -1,8 +1,15 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-25T22:27:00.728Z
+// it was generated on 2025-01-25T22:42:42.000Z
 
 #pragma once
 
+#include <time.h>
+
+uint64_t get_current_ms(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
 
 // DRAW: IMAGE
 
@@ -152,13 +159,6 @@ HOST_FUNCTION(void, image_save, (uint32_t imagePtr, uint32_t filenamePtr), {
   pntr_image* image = appData->images[imagePtr];
   char* filename = copy_from_cart_string(filenamePtr);
   pntr_save_image(image, filename);
-})
-
-// Scale an image, in-place
-HOST_FUNCTION(void, image_scale, (uint32_t imagePtr, float scaleX, float scaleY, uint32_t filter), {
-  pntr_image* image = appData->images[imagePtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called image_scale");
 })
 
 // Unload an image
@@ -612,8 +612,7 @@ HOST_FUNCTION(uint32_t, get_write_dir, (), {
 
 // Get system-time (ms) since unix epoch
 HOST_FUNCTION(uint32_t, current_time, (), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called current_time");
+  return get_current_ms();
 })
 
 // Get the change in time (seconds) since the last update run

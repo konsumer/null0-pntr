@@ -47,7 +47,6 @@ image_load:
   returns: Image
   description: Load an image from a file in cart
 
-
 draw_image:
   args:
     destination: Image
@@ -116,15 +115,6 @@ image_resize:
     fill: Color
   returns: void
   description: Resize an image, in-place
-
-image_scale:
-  args:
-    image: Image
-    scaleX: f32
-    scaleY: f32
-    filter: ImageFilter
-  returns: void
-  description: Scale an image, in-place
 
 image_color_replace:
   args:
@@ -213,6 +203,3 @@ image_gradient:
     bottomRight: Color
   returns: Image
   description: Create a new image of a gradient
-
-
-

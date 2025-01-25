@@ -7,6 +7,14 @@ import { basename } from 'node:path'
 
 const out = ['// this contains the shared definitions for all hosts', `// it was generated on ${new Date().toISOString()}`, '', '#pragma once', '']
 
+out.push(`#include <time.h>
+
+uint64_t get_current_ms(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}`)
+
 const typeMap = {
   void: 'void',
   string: 'uint32_t',
@@ -60,10 +68,6 @@ funcs.image_new = '  return cart_create_image(appData, pntr_gen_image_color(widt
 funcs.image_resize = '  pntr_image_resize_canvas(image, newWidth, newHeight, offsetX, offsetY, fill);'
 funcs.image_rotate = '  return cart_create_image(appData, pntr_image_rotate(image, degrees, filter));'
 funcs.image_save = '  pntr_save_image(image, filename);'
-
-// TODO: handle in-place scale
-// funcs.image_scale = '  pntr_image_scale(image, scaleX, scaleY, filter);'
-
 funcs.image_unload = '  pntr_unload_image(image);'
 funcs.subimage = '  return cart_create_image(appData, pntr_image_subimage(image, x, y, width, height));'
 
@@ -178,7 +182,7 @@ funcs.color_tint = '  pntr_color_tint(color, tint);'
 // funcs.file_write = '  pntr_file_write(filename, data, byteSize);'
 // funcs.get_write_dir = '  pntr_get_write_dir();'
 
-// funcs.current_time = '  pntr_current_time();'
+funcs.current_time = '  return get_current_ms();'
 funcs.delta_time = '  return pntr_app_delta_time(appData->app);'
 funcs.random_int = '  pntr_app_random(appData->app, min, max);'
 funcs.trace = '  printf("%s\\n", str);'
