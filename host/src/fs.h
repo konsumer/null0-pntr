@@ -31,9 +31,6 @@ typedef enum {
   FILE_TYPE_DIR
 } DetectFileType;
 
-// call this to initialize filesystem
-bool fs_init(char* cartName);
-
 // called to unload filesystem
 void fs_unload();
 
@@ -48,6 +45,9 @@ bool fs_save_file_real(char* filename, unsigned char* data, uint32_t byteSize);
 
 // save a file to physfs filesystem
 bool fs_save_file(char* filename, unsigned char* data, uint32_t byteSize);
+
+// append to a file in physfs filesystem
+bool fs_append_file(char* filename, unsigned char* data, uint32_t byteSize);
 
 // just detect filetype from first 4 bytes
 DetectFileType fs_parse_magic_bytes(uint32_t magic_number);
@@ -65,85 +65,6 @@ char* fs_get_cart_name(char* filename);
 PHYSFS_Stat fs_file_info(char* filename);
 
 #ifdef FS_IMPLEMENTATION
-
-// call this to initialize filesystem
-bool fs_init(char* cartFilename) {
-  // logic:
-  //   mount root & write-dir (per-cartname)
-  //   if cartName=dir: mount dir
-  //   if cartName=zip: mount zip
-  //   if cartName=wasm: mount dir that contains the wasm
-  //   else: return false
-  //
-  char* cartName = fs_get_cart_name(cartFilename);
-
-  if (cartName == NULL) {
-    return false;
-  }
-
-  if (!PHYSFS_init("/")) {
-    return false;
-  }
-
-  const char* null0_writable_dir = PHYSFS_getPrefDir("null0", cartName);
-
-// build what is put into null0_writable_dir, so it can be mounted
-#ifdef EMSCRIPTEN
-  if (mkdir("/home", 0) == -1) {
-    // printf("could not make /home\n");
-  }
-  if (mkdir("/home/web_user", 0) == -1) {
-    // printf("could not make /home/web_user\n");
-  }
-  if (mkdir("/home/web_user/.local", 0) == -1) {
-    // printf("could not make /home/web_user/.local\n");
-  }
-  if (mkdir("/home/web_user/.local/share", 0) == -1) {
-    // printf("could not make /home/web_user/.local/share\n");
-  }
-  if (mkdir(null0_writable_dir, 0) == -1) {
-    // printf("could not make %s\n", null0_writable_dir);
-  }
-#endif
-
-  if (null0_writable_dir == NULL) {
-    return false;
-  }
-
-  DetectFileType cartType = fs_detect_type_real(cartFilename);
-
-  switch (cartType) {
-    case FILE_TYPE_DIR:
-    case FILE_TYPE_ZIP: {
-      if (!PHYSFS_mount(cartFilename, NULL, 1)) {
-        PHYSFS_deinit();
-        return false;
-      }
-      break;
-    }
-    case FILE_TYPE_WASM: {
-      if (!PHYSFS_mount(dirname(cartFilename), NULL, 1)) {
-        PHYSFS_deinit();
-        return false;
-      }
-      break;
-    }
-    default:
-      return false;
-  }
-
-  if (!PHYSFS_mount(null0_writable_dir, NULL, 1)) {
-    PHYSFS_deinit();
-    return false;
-  }
-
-  if (!PHYSFS_setWriteDir((const char*)null0_writable_dir)) {
-    PHYSFS_deinit();
-    return false;
-  }
-
-  return true;
-}
 
 // called to unload filesystem
 void fs_unload() { PHYSFS_deinit(); }
@@ -228,6 +149,16 @@ bool fs_save_file(char* filename, unsigned char* data, uint32_t byteSize) {
     return false;
   }
   return true;
+}
+
+bool fs_append_file(char* filename, unsigned char* data, uint32_t byteSize) {
+    PHYSFS_File* f = PHYSFS_openAppend(filename);
+    PHYSFS_sint64 bytesWritten = PHYSFS_writeBytes(f, data, byteSize);
+    PHYSFS_close(f);
+    if (byteSize != bytesWritten) {
+      return false;
+    }
+    return true;
 }
 
 // just detect filetype from first 4 bytes

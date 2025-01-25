@@ -1,14 +1,25 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-25T22:42:42.000Z
+// it was generated on 2025-01-25T23:25:21.414Z
 
 #pragma once
 
 #include <time.h>
 
+typedef enum SfxPresetType {
+  SFX_COIN,
+  SFX_LASER,
+  SFX_EXPLOSION,
+  SFX_POWERUP,
+  SFX_HURT,
+  SFX_JUMP,
+  SFX_SELECT,
+  SFX_SYNTH
+} SfxPresetType;
+
 uint64_t get_current_ms(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
 }
 
 // DRAW: IMAGE
@@ -479,9 +490,36 @@ HOST_FUNCTION(uint32_t, sfx_load, (uint32_t filenamePtr), {
 })
 
 // Generate randomized preset sfxr params
-HOST_FUNCTION(uint32_t, sfx_preset, (uint32_t type), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sfx_preset");
+HOST_FUNCTION(uint32_t, sfx_preset, (SfxPresetType type), {
+  SfxParams params = {};
+  switch (type) {
+    case SFX_COIN:
+      pntr_app_sfx_gen_pickup_coin(appData->app, &params);
+      break;
+    case SFX_LASER:
+      pntr_app_sfx_gen_laser_shoot(appData->app, &params);
+    case SFX_EXPLOSION:
+      pntr_app_sfx_gen_explosion(appData->app, &params);
+      break;
+    case SFX_POWERUP:
+      pntr_app_sfx_gen_powerup(appData->app, &params);
+      break;
+    case SFX_HURT:
+      pntr_app_sfx_gen_hit_hurt(appData->app, &params);
+      break;
+    case SFX_JUMP:
+      pntr_app_sfx_gen_jump(appData->app, &params);
+      break;
+    case SFX_SELECT:
+      pntr_app_sfx_gen_blip_select(appData->app, &params);
+      break;
+    case SFX_SYNTH:
+      pntr_app_sfx_gen_synth(appData->app, &params);
+      break;
+    default:
+      printf("sfx_preset: no type!\n");
+  }
+  return copy_to_cart(&params, sizeof(params));
 })
 
 // Convert SfxParams to a sound
@@ -569,8 +607,7 @@ HOST_FUNCTION(uint32_t, color_tint, (uint32_t colorPtr, uint32_t tintPtr), {
 // Write a file to persistant storage, appending to the end
 HOST_FUNCTION(bool, file_append, (uint32_t filenamePtr, uint32_t data, uint32_t byteSize), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_append");
+  return fs_append_file(filename, copy_from_cart(data, byteSize), byteSize);
 })
 
 // Get info about a single file
@@ -590,21 +627,21 @@ HOST_FUNCTION(uint32_t, file_list, (uint32_t dirPtr, uint32_t size), {
 // Read a file from cart (or local persistant)
 HOST_FUNCTION(uint32_t, file_read, (uint32_t filenamePtr, uint32_t bytesRead), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_read");
+  uint32_t bytesReadHost = 0;
+  unsigned char* out = fs_load_file(filename, &bytesReadHost);
+  copy_to_cart(&bytesReadHost, sizeof(bytesReadHost));
+  if (bytesReadHost) {
+    return copy_to_cart(out, bytesReadHost);
+  } else {
+    return 0;
+  }
+
 })
 
 // Write a file to persistant storage
 HOST_FUNCTION(bool, file_write, (uint32_t filenamePtr, uint32_t data, uint32_t byteSize), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_write");
-})
-
-// Get the user's writable dir (where file writes or appends go)
-HOST_FUNCTION(uint32_t, get_write_dir, (), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called get_write_dir");
+  return fs_save_file(filename, copy_from_cart(data, byteSize), byteSize);
 })
 
 

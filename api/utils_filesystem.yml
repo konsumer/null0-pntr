@@ -33,8 +33,3 @@ file_list:
     size: u32*
   returns: string[]
   description: Get list of files in a directory
-
-get_write_dir:
-  returns: string
-  args: {}
-  description: Get the user's writable dir (where file writes or appends go)

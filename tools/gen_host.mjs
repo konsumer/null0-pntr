@@ -9,11 +9,24 @@ const out = ['// this contains the shared definitions for all hosts', `// it was
 
 out.push(`#include <time.h>
 
+typedef enum SfxPresetType {
+  SFX_COIN,
+  SFX_LASER,
+  SFX_EXPLOSION,
+  SFX_POWERUP,
+  SFX_HURT,
+  SFX_JUMP,
+  SFX_SELECT,
+  SFX_SYNTH
+} SfxPresetType;
+
 uint64_t get_current_ms(void) {
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+  struct timespec ts;
+  clock_gettime(CLOCK_REALTIME, &ts);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
 }`)
+
+// TODO: use upstream enums for enums like MouseButton (to limit values and make it clearer)
 
 const typeMap = {
   void: 'void',
@@ -24,7 +37,7 @@ const typeMap = {
   Sound: 'uint32_t',
   bool: 'bool',
   SfxParams: 'uint32_t',
-  SfxPresetType: 'uint32_t',
+  SfxPresetType: 'SfxPresetType',
   Path: 'uint32_t',
   Image: 'uint32_t',
   Color: 'uint32_t',
@@ -72,6 +85,7 @@ funcs.image_unload = '  pntr_unload_image(image);'
 funcs.subimage = '  return cart_create_image(appData, pntr_image_subimage(image, x, y, width, height));'
 
 // TODO: brush API
+// these are still in flux, look at pntr_brush
 // funcs.curve_to = '  pntr_curve_to(path, x, y, radius);'
 // funcs.fill = '  pntr_fill(path, color);'
 // funcs.line_to = '  pntr_line_to(path, x, y);'
@@ -160,7 +174,36 @@ funcs.sfx_load = `  SfxParams params={};
   }
   return 0;
 `
-// funcs.sfx_preset = '  pntr_sfx_preset(type);'
+funcs.sfx_preset = `  SfxParams params = {};
+  switch (type) {
+    case SFX_COIN:
+      pntr_app_sfx_gen_pickup_coin(appData->app, &params);
+      break;
+    case SFX_LASER:
+      pntr_app_sfx_gen_laser_shoot(appData->app, &params);
+    case SFX_EXPLOSION:
+      pntr_app_sfx_gen_explosion(appData->app, &params);
+      break;
+    case SFX_POWERUP:
+      pntr_app_sfx_gen_powerup(appData->app, &params);
+      break;
+    case SFX_HURT:
+      pntr_app_sfx_gen_hit_hurt(appData->app, &params);
+      break;
+    case SFX_JUMP:
+      pntr_app_sfx_gen_jump(appData->app, &params);
+      break;
+    case SFX_SELECT:
+      pntr_app_sfx_gen_blip_select(appData->app, &params);
+      break;
+    case SFX_SYNTH:
+      pntr_app_sfx_gen_synth(appData->app, &params);
+      break;
+    default:
+      printf("sfx_preset: no type!\\n");
+  }
+  return copy_to_cart(&params, sizeof(params));`
+
 funcs.sfx_to_sound = '  return cart_create_sound(appData, pntr_app_sfx_sound(appData->app,  (SfxParams*)copy_from_cart(input, sizeof(SfxParams))));'
 funcs.sound_load = '  return cart_create_sound(appData, pntr_load_sound(filename));'
 funcs.sound_play = '  pntr_play_sound(sound, loop);'
@@ -175,12 +218,19 @@ funcs.color_fade = '  pntr_color_fade(color, alpha);'
 funcs.color_invert = '  pntr_color_invert(color);'
 funcs.color_tint = '  pntr_color_tint(color, tint);'
 
-// funcs.file_append = '  pntr_file_append(filename, data, byteSize);'
-// funcs.file_info = '  pntr_file_info(filename);'
+funcs.file_append = '  return fs_append_file(filename, copy_from_cart(data, byteSize), byteSize);'
+funcs.file_info = '  copy_to_cart(fs_file_info(filename), sizeof(PHYSFS_Stat));'
 // funcs.file_list = '  pntr_file_list(dir, size);'
-// funcs.file_read = '  pntr_file_read(filename, bytesRead);'
-// funcs.file_write = '  pntr_file_write(filename, data, byteSize);'
-// funcs.get_write_dir = '  pntr_get_write_dir();'
+funcs.file_read = `  uint32_t bytesReadHost = 0;
+  unsigned char* out = fs_load_file(filename, &bytesReadHost);
+  copy_to_cart(&bytesReadHost, sizeof(bytesReadHost));
+  if (bytesReadHost) {
+    return copy_to_cart(out, bytesReadHost);
+  } else {
+    return 0;
+  }
+`
+funcs.file_write = '  return fs_save_file(filename, copy_from_cart(data, byteSize), byteSize);'
 
 funcs.current_time = '  return get_current_ms();'
 funcs.delta_time = '  return pntr_app_delta_time(appData->app);'
