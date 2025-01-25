@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-23T09:19:59.138Z
+// it was generated on 2025-01-25T00:28:37.111Z
 
 #pragma once
 
@@ -241,56 +241,79 @@ HOST_FUNCTION(void, clear, (uint32_t destinationPtr, uint32_t colorPtr), {
 HOST_FUNCTION(void, draw_arc, (uint32_t destinationPtr, int32_t centerX, int32_t centerY, float radius, float startAngle, float endAngle, int32_t segments, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_arc");
+  if (thickness != 0) {
+    pntr_draw_arc_thick(destination, centerX, centerY, radius, startAngle, endAngle, segments, thickness, color);
+  } else {
+    pntr_draw_arc_fill(destination, centerX, centerY, radius, startAngle, endAngle, segments, color);
+  }
+
 })
 
 // Draw a circle on an image. Set thickness to 0 for "fill".
 HOST_FUNCTION(void, draw_circle, (uint32_t destinationPtr, int32_t centerX, int32_t centerY, int32_t radius, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_circle");
+  if (thickness != 0) {
+    pntr_draw_circle_thick(destination, centerX, centerY, radius, thickness, color);
+  } else {
+    pntr_draw_circle_fill(destination, centerX, centerY, radius, color);
+  }
+
 })
 
 // Draw a filled ellipse on an image. Set thickness to 0 for "fill".
 HOST_FUNCTION(void, draw_ellipse, (uint32_t destinationPtr, int32_t centerX, int32_t centerY, int32_t radiusX, int32_t radiusY, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_ellipse");
+  if (thickness != 0) {
+    pntr_draw_ellipse_thick(destination, centerX, centerY, radiusX, radiusY, thickness, color);
+  } else {
+    pntr_draw_ellipse_fill(destination, centerX, centerY, radiusX, radiusY, color);
+  }
+
 })
 
 // Draw a line on an image
 HOST_FUNCTION(void, draw_line, (uint32_t destinationPtr, int32_t startPosX, int32_t startPosY, int32_t endPosX, int32_t endPosY, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_line");
+  if (thickness != 0) {
+    pntr_draw_line_thick(destination, startPosX, startPosY, endPosX, endPosY, thickness, color);
+  } else {
+    pntr_draw_line(destination, startPosX, startPosY, endPosX, endPosY, color);
+  }
+
 })
 
 // Draw a single pixel on an image
 HOST_FUNCTION(void, draw_point, (uint32_t destinationPtr, int32_t x, int32_t y, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_point");
+  pntr_draw_point(destination, x, y, color);
 })
 
 // Draw a filled rectangle on an image. Set thickness to 0 for "fill".
 HOST_FUNCTION(void, draw_rectangle, (uint32_t destinationPtr, int32_t posX, int32_t posY, int32_t width, int32_t height, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_rectangle");
+  if (thickness != 0) {
+    pntr_draw_rectangle_thick(destination, posX, posY, width, height, thickness, color);
+  } else {
+    pntr_draw_rectangle_fill(destination, posX, posY, width, height, color);
+  }
+
 })
 
 // Draw a filled round-rectangle on an image. Set thickness to 0 for "fill".
 HOST_FUNCTION(void, draw_rectangle_rounded, (uint32_t destinationPtr, int32_t x, int32_t y, int32_t width, int32_t height, int32_t cornerRadius, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_rectangle_rounded");
+  if (thickness != 0) {
+    pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
+  } else {
+    pntr_draw_rectangle_rounded_fill(destination, x, y, width, height, cornerRadius, color);
+  }
+
 })
 
 // Draw some text on an image
@@ -306,8 +329,12 @@ HOST_FUNCTION(void, draw_text, (uint32_t destinationPtr, uint32_t fontPtr, uint3
 HOST_FUNCTION(void, draw_triangle, (uint32_t destinationPtr, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, uint32_t thickness, uint32_t colorPtr), {
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called draw_triangle");
+  if (thickness != 0) {
+    pntr_draw_triangle_thick(destination, x1, y1, x2, y2, x3, y3, thickness, color);
+  } else {
+    pntr_draw_triangle_fill(destination, x1, y1, x2, y2, x3, y3, color);
+  }
+
 })
 
 
@@ -443,8 +470,12 @@ HOST_FUNCTION(uint32_t, mouse_position, (), {
 // Create a new sfxr from a .rfx file
 HOST_FUNCTION(uint32_t, sfx_load, (uint32_t filenamePtr), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sfx_load");
+  SfxParams params={};
+  if (pntr_app_sfx_load_params(&params, filename)) {
+    return copy_to_cart(&params, sizeof(params));
+  }
+  return 0;
+
 })
 
 // Generate randomized preset sfxr params
@@ -455,36 +486,31 @@ HOST_FUNCTION(uint32_t, sfx_preset, (uint32_t type), {
 
 // Convert SfxParams to a sound
 HOST_FUNCTION(uint32_t, sfx_to_sound, (uint32_t input), {
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sfx_to_sound");
+  return cart_create_sound(appData, pntr_app_sfx_sound(appData->app,  (SfxParams*)copy_from_cart(input, sizeof(SfxParams))));
 })
 
 // Load a sound from a file in cart
 HOST_FUNCTION(uint32_t, sound_load, (uint32_t filenamePtr), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sound_load");
+  return cart_create_sound(appData, pntr_load_sound(filename));
 })
 
 // Play a sound
 HOST_FUNCTION(void, sound_play, (uint32_t soundPtr, bool loop), {
   pntr_sound* sound = appData->sounds[soundPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sound_play");
+  pntr_play_sound(sound, loop);
 })
 
 // Stop a sound
 HOST_FUNCTION(void, sound_stop, (uint32_t soundPtr), {
   pntr_sound* sound = appData->sounds[soundPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sound_stop");
+  pntr_stop_sound(sound);
 })
 
 // Unload a sound
 HOST_FUNCTION(void, sound_unload, (uint32_t soundPtr), {
   pntr_sound* sound = appData->sounds[soundPtr];
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called sound_unload");
+  pntr_unload_sound(sound);
 })
 
 

@@ -67,6 +67,7 @@ funcs.image_save = '  pntr_save_image(image, filename);'
 funcs.image_unload = '  pntr_unload_image(image);'
 funcs.subimage = '  return cart_create_image(appData, pntr_image_subimage(image, x, y, width, height));'
 
+// TODO: brush API
 // funcs.curve_to = '  pntr_curve_to(path, x, y, radius);'
 // funcs.fill = '  pntr_fill(path, color);'
 // funcs.line_to = '  pntr_line_to(path, x, y);'
@@ -75,18 +76,56 @@ funcs.subimage = '  return cart_create_image(appData, pntr_image_subimage(image,
 // funcs.path_start = '  pntr_path_start(image);'
 // funcs.stroke = '  pntr_stroke(path, thickness, color);'
 
-//TODO: deal with thickness/fill
-
 funcs.clear = '  pntr_clear_background(destination, color);'
-// funcs.draw_arc = '  pntr_draw_arc(destination, centerX, centerY, radius, startAngle, endAngle, segments, thickness, color);'
-// funcs.draw_circle = '  pntr_draw_circle(destination, centerX, centerY, radius, thickness, color);'
-// funcs.draw_ellipse = '  pntr_draw_ellipse(destination, centerX, centerY, radiusX, radiusY, thickness, color);'
-// funcs.draw_line = '  pntr_draw_line(destination, startPosX, startPosY, endPosX, endPosY, thickness, color);'
-// funcs.draw_point = '  pntr_draw_point(destination, x, y, color);'
-// funcs.draw_rectangle = '  pntr_draw_rectangle(destination, posX, posY, width, height, thickness, color);'
-// funcs.draw_rectangle_rounded = '  pntr_draw_rectangle_rounded(destination, x, y, width, height, cornerRadius, thickness, color);'
+funcs.draw_point = '  pntr_draw_point(destination, x, y, color);'
+funcs.draw_rectangle = `  if (thickness != 0) {
+    pntr_draw_rectangle_thick(destination, posX, posY, width, height, thickness, color);
+  } else {
+    pntr_draw_rectangle_fill(destination, posX, posY, width, height, color);
+  }
+`
 funcs.draw_text = '  pntr_draw_text(destination, font, text, posX, posY, color);'
-// funcs.draw_triangle = '  pntr_draw_triangle(destination, x1, y1, x2, y2, x3, y3, thickness, color);'
+funcs.draw_triangle = `  if (thickness != 0) {
+    pntr_draw_triangle_thick(destination, x1, y1, x2, y2, x3, y3, thickness, color);
+  } else {
+    pntr_draw_triangle_fill(destination, x1, y1, x2, y2, x3, y3, color);
+  }
+`
+
+funcs.draw_rectangle_rounded = `  if (thickness != 0) {
+    pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
+  } else {
+    pntr_draw_rectangle_rounded_fill(destination, x, y, width, height, cornerRadius, color);
+  }
+`
+
+funcs.draw_arc = `  if (thickness != 0) {
+    pntr_draw_arc_thick(destination, centerX, centerY, radius, startAngle, endAngle, segments, thickness, color);
+  } else {
+    pntr_draw_arc_fill(destination, centerX, centerY, radius, startAngle, endAngle, segments, color);
+  }
+`
+
+funcs.draw_circle = `  if (thickness != 0) {
+    pntr_draw_circle_thick(destination, centerX, centerY, radius, thickness, color);
+  } else {
+    pntr_draw_circle_fill(destination, centerX, centerY, radius, color);
+  }
+`
+
+funcs.draw_ellipse = `  if (thickness != 0) {
+    pntr_draw_ellipse_thick(destination, centerX, centerY, radiusX, radiusY, thickness, color);
+  } else {
+    pntr_draw_ellipse_fill(destination, centerX, centerY, radiusX, radiusY, color);
+  }
+`
+
+funcs.draw_line = `  if (thickness != 0) {
+    pntr_draw_line_thick(destination, startPosX, startPosY, endPosX, endPosY, thickness, color);
+  } else {
+    pntr_draw_line(destination, startPosX, startPosY, endPosX, endPosY, color);
+  }
+`
 
 funcs.font_copy = '  return cart_create_font(appData, pntr_font_copy(font));'
 funcs.font_load_bmf = '  return cart_create_font(appData, pntr_load_font_bmf(filename, characters));'
@@ -111,13 +150,18 @@ funcs.mouse_button_released = '  return pntr_app_mouse_button_released(appData->
 funcs.mouse_button_up = '  return pntr_app_mouse_button_up(appData->app, button);'
 funcs.mouse_position = '  pntr_vector pos = (pntr_vector) { .x=pntr_app_mouse_x(appData->app), .y=pntr_app_mouse_y(appData->app) };\n  return copy_to_cart(&pos, sizeof(pos));'
 
-// funcs.sfx_load = '  pntr_sfx_load(filename);'
+funcs.sfx_load = `  SfxParams params={};
+  if (pntr_app_sfx_load_params(&params, filename)) {
+    return copy_to_cart(&params, sizeof(params));
+  }
+  return 0;
+`
 // funcs.sfx_preset = '  pntr_sfx_preset(type);'
-// funcs.sfx_to_sound = '  pntr_sfx_to_sound(input);'
-// funcs.sound_load = '  pntr_sound_load(filename);'
-// funcs.sound_play = '  pntr_sound_play(sound, loop);'
-// funcs.sound_stop = '  pntr_sound_stop(sound);'
-// funcs.sound_unload = '  pntr_sound_unload(sound);'
+funcs.sfx_to_sound = '  return cart_create_sound(appData, pntr_app_sfx_sound(appData->app,  (SfxParams*)copy_from_cart(input, sizeof(SfxParams))));'
+funcs.sound_load = '  return cart_create_sound(appData, pntr_load_sound(filename));'
+funcs.sound_play = '  pntr_play_sound(sound, loop);'
+funcs.sound_stop = '  pntr_stop_sound(sound);'
+funcs.sound_unload = '  pntr_unload_sound(sound);'
 
 funcs.color_alpha_blend = '  pntr_color_alpha_blend(dst, src);'
 funcs.color_bilinear_interpolate = '  pntr_color_bilinear_interpolate(color00, color01, color10, color11, coordinateX, coordinateY);'
