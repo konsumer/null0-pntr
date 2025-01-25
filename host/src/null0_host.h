@@ -132,28 +132,5 @@ uint32_t cart_create_sound(AppData *appData, pntr_sound* sound) {
 #include "null0_host_native.h"
 #endif
 
-// these are temp functions I will try to actually implement & add back to pntr
-// for now, they are just dummies that ignore thickness
-// https://github.com/RobLoach/pntr/pull/195
-
-void pntr_draw_triangle_thick(pntr_image *dst, int x1, int y1, int x2, int y2, int x3, int y3, int thickness, pntr_color color) {
-  pntr_draw_triangle(dst, x1, y1, x2, y2, x3, y3, color);
-}
-void pntr_draw_ellipse_thick(pntr_image *dst, int centerX, int centerY, int radiusX, int radiusY, int thickness, pntr_color color) {
-  pntr_draw_ellipse(dst, centerX, centerY, radiusX, radiusY, color);
-}
-void pntr_draw_circle_thick(pntr_image *dst, int centerX, int centerY, int radius, int thickness, pntr_color color) {
-  pntr_draw_circle(dst, centerX, centerY, radius, color);
-}
-void pntr_draw_arc_thick(pntr_image *dst, int centerX, int centerY, float radius, float startAngle, float endAngle, int segments, int thickness, pntr_color color) {
-  pntr_draw_arc(dst, centerX, centerY, radius, startAngle, endAngle, segments, color);
-}
-void pntr_draw_rectangle_rounded_thick(pntr_image *dst, int x, int y, int width, int height, int topLeftRadius, int topRightRadius, int bottomLeftRadius, int bottomRightRadius, int thickness, pntr_color color) {
-  pntr_draw_rectangle_rounded(dst, x, y, width, height, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius, color);
-}
-void pntr_draw_line_thick(pntr_image *dst, int startPosX, int startPosY, int endPosX, int endPosY, int thickness, pntr_color color) {
-    pntr_draw_line(dst, startPosX, startPosY, endPosX, endPosY, color);
-}
-
 // shared definitions for all hosts
 #include "null0_host_api.h"

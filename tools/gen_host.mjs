@@ -93,7 +93,7 @@ funcs.draw_triangle = `  if (thickness != 0) {
 `
 
 funcs.draw_rectangle_rounded = `  if (thickness != 0) {
-    pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
+    pntr_draw_rectangle_thick_rounded(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
   } else {
     pntr_draw_rectangle_rounded_fill(destination, x, y, width, height, cornerRadius, color);
   }

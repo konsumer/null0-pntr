@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-25T00:28:37.111Z
+// it was generated on 2025-01-25T22:27:00.728Z
 
 #pragma once
 
@@ -309,7 +309,7 @@ HOST_FUNCTION(void, draw_rectangle_rounded, (uint32_t destinationPtr, int32_t x,
   pntr_image* destination = appData->images[destinationPtr];
   pntr_color color = cart_color(colorPtr);
   if (thickness != 0) {
-    pntr_draw_rectangle_rounded_thick(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
+    pntr_draw_rectangle_thick_rounded(destination, x, y, width, height, cornerRadius, cornerRadius, cornerRadius, cornerRadius, thickness, color);
   } else {
     pntr_draw_rectangle_rounded_fill(destination, x, y, width, height, cornerRadius, color);
   }
