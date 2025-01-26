@@ -704,10 +704,6 @@ u8* file_read(char* filename, u32* bytesRead);
 NULL0_IMPORT("file_write")
 bool file_write(char* filename, u8* data, u32 byteSize);
 
-// Get the user's writable dir (where file writes or appends go)
-NULL0_IMPORT("get_write_dir")
-char* get_write_dir();
-
 
 // UTILS: GENERAL
 

@@ -26,10 +26,3 @@ file_info:
     filename: string
   returns: FileInfo
   description: Get info about a single file
-
-file_list:
-  args:
-    dir: string
-    size: u32*
-  returns: string[]
-  description: Get list of files in a directory

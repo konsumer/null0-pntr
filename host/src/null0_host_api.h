@@ -1,5 +1,5 @@
 // this contains the shared definitions for all hosts
-// it was generated on 2025-01-25T23:25:21.414Z
+// it was generated on 2025-01-26T00:24:02.583Z
 
 #pragma once
 
@@ -613,15 +613,8 @@ HOST_FUNCTION(bool, file_append, (uint32_t filenamePtr, uint32_t data, uint32_t 
 // Get info about a single file
 HOST_FUNCTION(uint32_t, file_info, (uint32_t filenamePtr), {
   char* filename = copy_from_cart_string(filenamePtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_info");
-})
-
-// Get list of files in a directory
-HOST_FUNCTION(uint32_t, file_list, (uint32_t dirPtr, uint32_t size), {
-  char* dir = copy_from_cart_string(dirPtr);
-  // TODO
-  pntr_app_log(PNTR_APP_LOG_DEBUG, "called file_list");
+  PHYSFS_Stat info = fs_file_info(filename);
+  copy_to_cart(&info, sizeof(PHYSFS_Stat));
 })
 
 // Read a file from cart (or local persistant)

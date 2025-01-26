@@ -219,8 +219,7 @@ funcs.color_invert = '  pntr_color_invert(color);'
 funcs.color_tint = '  pntr_color_tint(color, tint);'
 
 funcs.file_append = '  return fs_append_file(filename, copy_from_cart(data, byteSize), byteSize);'
-funcs.file_info = '  copy_to_cart(fs_file_info(filename), sizeof(PHYSFS_Stat));'
-// funcs.file_list = '  pntr_file_list(dir, size);'
+funcs.file_info = '  PHYSFS_Stat info = fs_file_info(filename);\n  copy_to_cart(&info, sizeof(PHYSFS_Stat));'
 funcs.file_read = `  uint32_t bytesReadHost = 0;
   unsigned char* out = fs_load_file(filename, &bytesReadHost);
   copy_to_cart(&bytesReadHost, sizeof(bytesReadHost));
