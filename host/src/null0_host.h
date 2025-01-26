@@ -125,6 +125,14 @@ uint32_t cart_create_sound(AppData *appData, pntr_sound* sound) {
     return id;
 }
 
+
+// return ref-counter for brush
+uint32_t cart_create_brush(AppData *appData, pntr_brush* brush) {
+    uint32_t id = cvector_size(appData->brushes);
+    cvector_push_back(appData->brushes, brush);
+    return id;
+}
+
 // load the host-specifc implementation
 #ifdef EMSCRIPTEN
 #include "null0_host_web.h"
