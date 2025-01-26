@@ -84,15 +84,13 @@ funcs.image_save = '  pntr_save_image(image, filename);'
 funcs.image_unload = '  pntr_unload_image(image);'
 funcs.subimage = '  return cart_create_image(appData, pntr_image_subimage(image, x, y, width, height));'
 
-// TODO: brush API
-// these are still in flux, look at pntr_brush
-// funcs.curve_to = '  pntr_curve_to(path, x, y, radius);'
-// funcs.fill = '  pntr_fill(path, color);'
-// funcs.line_to = '  pntr_line_to(path, x, y);'
-// funcs.move_to = '  pntr_move_to(path, x, y);'
-// funcs.path_end = '  pntr_path_end(path);'
-// funcs.path_start = '  pntr_path_start(image);'
-// funcs.stroke = '  pntr_stroke(path, thickness, color);'
+funcs.curve_to = '  pntr_curve_to(path, x, y, radius);'
+funcs.fill = '  pntr_fill(path, color);'
+funcs.line_to = '  pntr_line_to(path, x, y);'
+funcs.move_to = '  pntr_move_to(path, x, y);'
+funcs.path_end = '  pntr_path_end(path);'
+funcs.path_start = '  pntr_path_start(image);'
+funcs.stroke = '  pntr_stroke(path, thickness, color);'
 
 funcs.clear = '  pntr_clear_background(destination, color);'
 funcs.draw_point = '  pntr_draw_point(destination, x, y, color);'
