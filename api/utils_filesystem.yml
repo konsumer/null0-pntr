@@ -26,3 +26,23 @@ file_info:
     filename: string
   returns: FileInfo
   description: Get info about a single file
+
+browse_read:
+  args:
+    bytesRead: u32*
+  returns: bytes
+  description: Allow user to choose a file from local filesystem, then read it
+
+browse_write:
+  args:
+    data: bytes
+    byteSize: u32
+  returns: bool
+  description: Allow user to choose a file from local filesystem, then write to it
+
+browse_append:
+  args:
+    data: bytes
+    byteSize: u32
+  returns: bool
+  description: Allow user to choose a file from local filesystem, then write to it, appending to the end
