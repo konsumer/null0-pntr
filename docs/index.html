@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>null0</title>
+    </head>
+    <body>
+        <canvas id="canvas" />
+        <script type="importmap">
+          {
+            "imports": {
+              "@easywasm/wasi": "https://esm.sh/@easywasm/wasi"
+            }
+          }
+        </script>
+        <script type="module">
+          import loadCart from './null0.js'
+          const game = await loadCart('./cart/c/colorbars.null0')
+          console.log(game)
+        </script>
+    </body>
+</html>

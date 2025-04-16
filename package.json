@@ -15,7 +15,8 @@
     "prebuild:web": "npm run config:web",
     "gen:host": "node tools/gen_host.mjs  > host/src/null0_host_api.h",
     "gen:cart_c": "node tools/gen_cart_c.mjs > cart/c/null0.h",
-    "clean": "rm -rf build wbuild"
+    "clean": "rm -rf build wbuild",
+    "start": "npx -y live-server --mount=/host:wbuild/host --mount=/cart:build/cart docs"
   },
   "keywords": [],
   "author": "David Konsumer <konsumer@jetboystudio.com>",

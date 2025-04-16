@@ -31,8 +31,8 @@ int main() {
   colors[24] = MAGENTA;
   colors[25] = RAYWHITE;
 
-  Color c = color_tint(RED, GREEN);
-  trace("Null0 Tint RED with GREEN: (%u, %u, %u, %u)\n", c.r, c.g, c.b, c.a);
+  Color* c = color_tint(RED, GREEN);
+  trace("Null0 Tint RED with GREEN: (%u, %u, %u, %u)\n", c->r, c->g, c->b, c->a);
 
   return 0;
 }

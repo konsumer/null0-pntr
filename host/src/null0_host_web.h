@@ -7,11 +7,25 @@
 static AppData *currentappData = NULL;
 
 // intiialize wasm (after cart is loaded)
-bool null0_host_init(AppData *appData, unsigned char *wasmBytes, unsigned int wasmSize) {
-  currentappData = appData;
-
-  return true;
-}
+EM_ASYNC_JS(bool, null0_host_init, (AppData *appData, unsigned char *wasmBytes, unsigned int wasmSize), {
+    const cartBytes = Module.HEAPU8.slice(wasmBytes, wasmBytes + wasmSize);
+    const imports = { null0: {} };
+    for (const f of Object.keys(Module)) {
+      if (f.startsWith('_host_')) {
+        const func = f.replace(/^_host_/, '');
+        imports.null0[func] = (...args) => {
+          const r = Module[f](...args);
+          console.log(`Calling ${func} with args: ${args} returned ${r}`);
+          return r;
+        };
+      }
+    }
+    imports.wasi_snapshot_preview1 = new Module.WasiPreview1({fs: Module.fs});
+    const { instance } = await WebAssembly.instantiate(cartBytes, imports);
+    Module.cart = instance.exports;
+    imports.wasi_snapshot_preview1.start(instance.exports);
+    return true;
+});
 
 // cleanup wasm
 void null0_host_cleanup(AppData *appData) {}

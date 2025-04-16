@@ -624,11 +624,11 @@ Vector mouse_position();
 
 // Create a new sfxr from a .rfx file
 NULL0_IMPORT("sfx_load")
-SfxParams sfx_load(char* filename);
+SfxParams* sfx_load(char* filename);
 
 // Generate randomized preset sfxr params
 NULL0_IMPORT("sfx_preset")
-SfxParams sfx_preset(SfxPresetType type);
+SfxParams* sfx_preset(SfxPresetType type);
 
 // Convert SfxParams to a sound
 NULL0_IMPORT("sfx_to_sound")
@@ -655,31 +655,31 @@ void sound_unload(u32 sound);
 
 // Blend 2 colors together
 NULL0_IMPORT("color_alpha_blend")
-Color color_alpha_blend(Color dst, Color src);
+Color* color_alpha_blend(Color dst, Color src);
 
 // Interpolate colors
 NULL0_IMPORT("color_bilinear_interpolate")
-Color color_bilinear_interpolate(Color color00, Color color01, Color color10, Color color11, f32 coordinateX, f32 coordinateY);
+Color* color_bilinear_interpolate(Color color00, Color color01, Color color10, Color color11, f32 coordinateX, f32 coordinateY);
 
 // Change the brightness of a color
 NULL0_IMPORT("color_brightness")
-Color color_brightness(Color color, f32 factor);
+Color* color_brightness(Color color, f32 factor);
 
 // Change contrast of a color
 NULL0_IMPORT("color_contrast")
-Color color_contrast(Color color, f32 contrast);
+Color* color_contrast(Color color, f32 contrast);
 
 // Fade a color
 NULL0_IMPORT("color_fade")
-Color color_fade(Color color, f32 alpha);
+Color* color_fade(Color color, f32 alpha);
 
 // Invert a color
 NULL0_IMPORT("color_invert")
-Color color_invert(Color color);
+Color* color_invert(Color color);
 
 // Tint a color with another color
 NULL0_IMPORT("color_tint")
-Color color_tint(Color color, Color tint);
+Color* color_tint(Color color, Color tint);
 
 
 // UTILS: FILESYSTEM
@@ -690,7 +690,7 @@ bool file_append(char* filename, u8* data, u32 byteSize);
 
 // Get info about a single file
 NULL0_IMPORT("file_info")
-FileInfo file_info(char* filename);
+FileInfo* file_info(char* filename);
 
 // Get list of files in a directory
 NULL0_IMPORT("file_list")
@@ -737,4 +737,3 @@ void trace(const char *format, ...) {
   va_end(args);
   _null0_trace_real(null0_traceBuffer);
 }
-
