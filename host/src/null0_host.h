@@ -68,7 +68,25 @@ void cart_free(uint32_t ptr);
 // get the strlen of a cart-pointer
 uint32_t cart_strlen(uint32_t cartPtr);
 
+
 // these are derived from above
+uint32_t copy_to_cart(void *hostPtr, uint32_t size);
+void *copy_from_cart(uint32_t cartPtr, uint32_t size);
+char *copy_from_cart_string(uint32_t cartPtr);
+uint32_t copy_to_cart_string(char *hostPtr);
+pntr_color cart_color(uint32_t colorPtr);
+uint32_t cart_create_image(AppData *appData, pntr_image* image);
+uint32_t cart_create_font(AppData *appData, pntr_font* font);
+uint32_t cart_create_sound(AppData *appData, pntr_sound* sound);
+uint32_t cart_create_brush(AppData *appData, pntr_brush* brush);
+
+
+// load the host-specifc implementation
+#ifdef EMSCRIPTEN
+#include "null0_host_web.h"
+#else
+#include "null0_host_native.h"
+#endif
 
 // copy a host-pointer to cart, return cart-pointer
 uint32_t copy_to_cart(void *hostPtr, uint32_t size) {
@@ -132,13 +150,6 @@ uint32_t cart_create_brush(AppData *appData, pntr_brush* brush) {
     cvector_push_back(appData->brushes, brush);
     return id;
 }
-
-// load the host-specifc implementation
-#ifdef EMSCRIPTEN
-#include "null0_host_web.h"
-#else
-#include "null0_host_native.h"
-#endif
 
 // shared definitions for all hosts
 #include "null0_host_api.h"

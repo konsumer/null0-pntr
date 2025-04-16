@@ -7,7 +7,7 @@ project(null0
   LANGUAGES C
 )
 
-set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_BUILD_TYPE Release)
 
 if(POLICY CMP0135)
     cmake_policy(SET CMP0135 NEW)

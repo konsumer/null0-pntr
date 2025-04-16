@@ -12,4 +12,3 @@ FetchContent_Declare(wamr
 )
 FetchContent_MakeAvailable(wamr)
 include (${wamr_SOURCE_DIR}/build-scripts/runtime_lib.cmake)
-add_library(vmlib ${WAMR_RUNTIME_LIB_SOURCE})

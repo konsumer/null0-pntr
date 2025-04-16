@@ -1,5 +1,7 @@
 // this is the implementation of emscripten-based host
 
+#pragma once
+
 #include "emscripten.h"
 
 static AppData *currentappData = NULL;
@@ -16,6 +18,10 @@ void null0_host_cleanup(AppData *appData) {}
 
 // called on every frame to update screen
 void null0_host_update(AppData *appData, float deltaTime) {}
+
+void null0_host_event(AppData *appData, pntr_app_event *event) {
+  // call cart_buttonUp/buttonDown/keyUp/keyDown
+}
 
 // copy a host-pointer to cart whenb you already have a cart-pointer
 EM_JS(void, copy_to_cart_with_pointer, (uint32_t cartPtr, void *hostPtr, uint32_t size), {
