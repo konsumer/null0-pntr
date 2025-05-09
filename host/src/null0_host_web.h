@@ -7,23 +7,37 @@
 static AppData *currentappData = NULL;
 
 // intiialize wasm (after cart is loaded)
-EM_ASYNC_JS(bool, null0_host_init, (AppData *appData, unsigned char *wasmBytes, unsigned int wasmSize), {
+EM_JS(bool, null0_host_init, (AppData *appData, unsigned char *wasmBytes, unsigned int wasmSize), {
     const cartBytes = Module.HEAPU8.slice(wasmBytes, wasmBytes + wasmSize);
-    const imports = { null0: {} };
+    const wasi_snapshot_preview1 = new Module.WasiPreview1({fs: Module.FS});
+    const imports = { null0: {}, wasi_snapshot_preview1 };
     for (const f of Object.keys(Module)) {
       if (f.startsWith('_host_')) {
         const func = f.replace(/^_host_/, '');
         imports.null0[func] = (...args) => {
-          const r = Module[f](...args);
-          console.log(`Calling ${func} with args: ${args} returned ${r}`);
-          return r;
+          console.log(`Calling ${func} with args: ${args}`);
+          return Module[f](...args);
         };
       }
     }
-    imports.wasi_snapshot_preview1 = new Module.WasiPreview1({fs: Module.fs});
-    const { instance } = await WebAssembly.instantiate(cartBytes, imports);
-    Module.cart = instance.exports;
-    imports.wasi_snapshot_preview1.start(instance.exports);
+    WebAssembly.instantiate(cartBytes, imports).then(({instance}) => {
+      Module.cart = instance.exports;
+      wasi_snapshot_preview1.start(instance.exports);
+      if (Module.cart.load) {
+        Module.cart.load();
+      }
+      if (Module.cart.update) {
+        const frameUpdate = () => {
+          try {
+            Module.cart.update();
+            requestAnimationFrame(frameUpdate);
+          } catch(err){
+            console.error(err);
+          }
+        };
+        frameUpdate();
+      }
+    });
     return true;
 });
 
@@ -37,32 +51,57 @@ void null0_host_event(AppData *appData, pntr_app_event *event) {
   // call cart_buttonUp/buttonDown/keyUp/keyDown
 }
 
-// copy a host-pointer to cart whenb you already have a cart-pointer
+// copy a host-pointer to cart when you already have a cart-pointer
 EM_JS(void, copy_to_cart_with_pointer, (uint32_t cartPtr, void *hostPtr, uint32_t size), {
-  new Uint8Array(Module.cart.memory.buffer).set(Module.HEAPU8.slice(hostPtr, hostPtr + size), cartPtr);
+  if (!Module.cart) {
+    console.error('copy_to_cart_with_pointer called before cart was initialized');
+    return;
+  }
+  const hostView = new Uint8Array(Module.HEAPU8.buffer, hostPtr, size);
+  const cartView = new Uint8Array(Module.cart.memory.buffer, cartPtr, size);
+  cartView.set(hostView);
 })
 
 // copy a cart-pointer to host when you already have a host-pointer
 EM_JS(void, copy_from_cart_with_pointer, (void *hostPtr, uint32_t cartPtr, uint32_t size), {
-  Module.HEAPU8.set(new Uint8Array(Module.cart.memory.buffer).slice(cartPtr, cartPtr + size), hostPtr);
+  if (!Module.cart) {
+    console.error('copy_from_cart_with_pointer called before cart was initialized');
+    return;
+  }
+  const cartView = new Uint8Array(Module.cart.memory.buffer, cartPtr, size);
+  const hostView = new Uint8Array(Module.HEAPU8.buffer, hostPtr, size);
+  hostView.set(cartView);
 })
 
 // allocate some memory in cart
 EM_JS(uint32_t, cart_malloc, (uint32_t size), {
+  if (!Module.cart) {
+    console.error('malloc called before cart was initialized');
+    return 0;
+  }
   return Module.cart.malloc(size);
 })
 
 // free some memory in cart
 EM_JS(void, cart_free, (uint32_t ptr), {
+  if (!Module.cart) {
+    console.error('free called before cart was initialized');
+    return;
+  }
   Module.cart.free(ptr);
 })
 
 // get the strlen of a cart-pointer
 EM_JS(uint32_t, cart_strlen, (uint32_t cartPtr), {
+  if (!Module.cart) {
+    console.error('cart_strlen called before cart was initialized');
+    return 0;
+  }
+  const mem = new Uint8Array(Module.cart.memory.buffer);
   let len = 0;
-  const mem = new Uint8Array(Module.cart.memory.buffer.slice(cartPtr, cartPtr + (1024 * 1024)));
-  while (mem[len])
+  while (mem[cartPtr + len] !== 0 && len < 1024 * 1024) {
     len++;
+  }
   return len;
 });
 

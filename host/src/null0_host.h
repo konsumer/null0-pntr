@@ -75,6 +75,8 @@ void *copy_from_cart(uint32_t cartPtr, uint32_t size);
 char *copy_from_cart_string(uint32_t cartPtr);
 uint32_t copy_to_cart_string(char *hostPtr);
 pntr_color cart_color(uint32_t colorPtr);
+uint32_t color_to_cart(pntr_color color);
+
 uint32_t cart_create_image(AppData *appData, pntr_image* image);
 uint32_t cart_create_font(AppData *appData, pntr_font* font);
 uint32_t cart_create_sound(AppData *appData, pntr_sound* sound);
@@ -120,6 +122,12 @@ pntr_color cart_color(uint32_t colorPtr) {
   pntr_color ret = pntr_new_color(c->r, c->g, c->b, c->a);
   free(c);
   return ret;
+}
+
+uint32_t color_to_cart(pntr_color color) {
+  uint32_t cartPtr = cart_malloc(sizeof(pntr_color));
+  copy_to_cart_with_pointer(cartPtr, &color, sizeof(pntr_color));
+  return cartPtr;
 }
 
 // return ref-counter for image

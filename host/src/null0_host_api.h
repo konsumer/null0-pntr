@@ -556,7 +556,7 @@ HOST_FUNCTION(void, sound_unload, (uint32_t soundPtr), {
 HOST_FUNCTION(uint32_t, color_alpha_blend, (uint32_t dstPtr, uint32_t srcPtr), {
   pntr_color dst = cart_color(dstPtr);
   pntr_color src = cart_color(srcPtr);
-  pntr_color_alpha_blend(dst, src);
+  return color_to_cart(pntr_color_alpha_blend(dst, src));
 })
 
 // Interpolate colors
@@ -565,38 +565,38 @@ HOST_FUNCTION(uint32_t, color_bilinear_interpolate, (uint32_t color00Ptr, uint32
   pntr_color color01 = cart_color(color01Ptr);
   pntr_color color10 = cart_color(color10Ptr);
   pntr_color color11 = cart_color(color11Ptr);
-  pntr_color_bilinear_interpolate(color00, color01, color10, color11, coordinateX, coordinateY);
+  return color_to_cart(pntr_color_bilinear_interpolate(color00, color01, color10, color11, coordinateX, coordinateY));
 })
 
 // Change the brightness of a color
 HOST_FUNCTION(uint32_t, color_brightness, (uint32_t colorPtr, float factor), {
   pntr_color color = cart_color(colorPtr);
-  pntr_color_brightness(color, factor);
+  return color_to_cart(pntr_color_brightness(color, factor));
 })
 
 // Change contrast of a color
 HOST_FUNCTION(uint32_t, color_contrast, (uint32_t colorPtr, float contrast), {
   pntr_color color = cart_color(colorPtr);
-  pntr_color_contrast(color, contrast);
+  return color_to_cart(pntr_color_contrast(color, contrast));
 })
 
 // Fade a color
 HOST_FUNCTION(uint32_t, color_fade, (uint32_t colorPtr, float alpha), {
   pntr_color color = cart_color(colorPtr);
-  pntr_color_fade(color, alpha);
+  return color_to_cart(pntr_color_fade(color, alpha));
 })
 
 // Invert a color
 HOST_FUNCTION(uint32_t, color_invert, (uint32_t colorPtr), {
   pntr_color color = cart_color(colorPtr);
-  pntr_color_invert(color);
+  return color_to_cart(pntr_color_invert(color));
 })
 
 // Tint a color with another color
 HOST_FUNCTION(uint32_t, color_tint, (uint32_t colorPtr, uint32_t tintPtr), {
   pntr_color color = cart_color(colorPtr);
   pntr_color tint = cart_color(tintPtr);
-  pntr_color_tint(color, tint);
+  return color_to_cart(pntr_color_tint(color, tint));
 })
 
 
@@ -658,4 +658,3 @@ HOST_FUNCTION(void, trace, (uint32_t strPtr), {
   char* str = copy_from_cart_string(strPtr);
   printf("%s\n", str);
 })
-

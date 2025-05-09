@@ -13,5 +13,6 @@ export default async function loadCart(url) {
       h.WasiPreview1 = WasiPreview1
     }
   })
+
   return {host}
 }
